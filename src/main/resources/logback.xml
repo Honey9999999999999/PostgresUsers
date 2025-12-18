@@ -1,0 +1,23 @@
+<configuration>
+    <!-- Настройка вывода в консоль -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- Убираем лишние даты и потоки, оставляем только само сообщение -->
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Уровень ERROR для всего Hibernate (скроет INFO и WARN) -->
+    <logger name="org.hibernate" level="ERROR" />
+
+    <!-- Отключаем логгер транзакций и метаданных -->
+    <logger name="org.hibernate.engine.transaction" level="ERROR" />
+    <logger name="org.hibernate.tool.schema" level="ERROR" />
+
+    <!-- Если хотите видеть SQL-запросы в чистом виде, оставьте DEBUG, если нет — ставьте ERROR -->
+    <logger name="org.hibernate.SQL" level="ERROR" />
+
+    <root level="ERROR">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>
