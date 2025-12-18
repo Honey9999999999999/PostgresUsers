@@ -2,15 +2,9 @@ package org.example;
 
 import org.example.dao.UserDAO;
 import org.example.model.User;
-import org.example.util.HibernateUtil;
-import org.hibernate.Session;
 
 import java.util.Scanner;
 
-/**
- * Hello world!
- *
- */
 public class App 
 {
     public static void main( String[] args )
@@ -19,17 +13,18 @@ public class App
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
-            System.out.println("\n--- Меню пользователя ---");
-            System.out.println("1. Создать пользователя");
-            System.out.println("2. Найти пользователя по ID");
-            System.out.println("3. Показать всех пользователей");
-            System.out.println("4. Обновить пользователя");
-            System.out.println("5. Удалить пользователя");
-            System.out.println("0. Выход");
-            System.out.print("Выберите действие: ");
+            String menuText = "\n--- Меню пользователя ---\n" +
+                    "1. Создать пользователя\n" +
+                    "2. Найти пользователя по ID\n" +
+                    "3. Показать всех пользователей\n" +
+                    "4. Обновить пользователя\n" +
+                    "5. Удалить пользователя\n" +
+                    "0. Выход\n" +
+                    "Выберите действие: ";
+            System.out.print(menuText);
 
             int choice = scanner.nextInt();
-            scanner.nextLine(); // очистка буфера
+            scanner.nextLine();
 
             if (choice == 0) break;
 
