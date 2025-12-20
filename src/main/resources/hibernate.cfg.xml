@@ -21,6 +21,8 @@
         <!-- Регистрация класса -->
         <mapping class="org.example.model.User"/>
         <mapping class="org.example.model.Role"/>
-        <mapping class="org.example.model.Post"/>
+        <mapping class="org.example.model.Content"/>
+        <mapping class="org.example.model.Article"/>
+        <mapping class="org.example.model.Comment"/>
     </session-factory>
 </hibernate-configuration>

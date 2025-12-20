@@ -1,8 +1,10 @@
 package org.example;
 
-import org.example.dao.PostDAO;
+import org.example.dao.ContentDAO;
 import org.example.dao.UserDAO;
-import org.example.model.Post;
+import org.example.model.Article;
+import org.example.model.Comment;
+import org.example.model.Content;
 import org.example.model.User;
 
 import java.util.HashMap;
@@ -12,7 +14,7 @@ import java.util.Scanner;
 public class App 
 {
     private static UserDAO userDAO;
-    private static PostDAO postDAO;
+    private static ContentDAO contentDAO;
     private static Scanner scanner;
 
     private static final HashMap<PageType, String> menusMap = new HashMap<>(Map.of(
@@ -28,6 +30,8 @@ public class App
         PageType.User, "\n--- Меню пользователя ---\n" +
                 "1. Написать пост\n" +
                 "2. Показать все посты\n" +
+                "3. Показать посты другого пользователя\n" +
+                "4. Прокомментировать пост\n" +
                 "0. Выйти из профиля\n" +
                 "Выберите действие: "
         )
@@ -45,7 +49,9 @@ public class App
         )),
         PageType.User, new HashMap<>(Map.of(
             1, App::createPost,
-            2, App::getPosts,
+            2, App::getMyPosts,
+            3, App::getAnotherPosts,
+            4, App::createComment,
             0, App::singOut
         ))
     ));
@@ -71,7 +77,7 @@ public class App
 
     private static void initialize() {
         userDAO = new UserDAO();
-        postDAO = new PostDAO();
+        contentDAO = new ContentDAO();
         scanner = new Scanner(System.in);
     }
 
@@ -100,7 +106,7 @@ public class App
     }
     private static void showAllUsers(){
         userDAO.findAll().forEach(u ->
-                System.out.println(u.getId() + ": " + u.getName() + " (" + u.getEmail() + ")"));
+                System.out.println("ID#" + u.getId() + ": " + u.getName() + " (" + u.getEmail() + ")"));
     }
     private static void updateUser(){
         System.out.print("Введите ID пользователя: ");
@@ -126,17 +132,40 @@ public class App
     }
 
     private static void createPost(){
-        Post post = new Post();
+        Article post = new Article();
         System.out.print("Введите название поста: ");
-        post.setName(scanner.nextLine());
+        post.setTitle(scanner.nextLine());
         System.out.print("Введите содержание: ");
-        post.setContent(scanner.nextLine());
+        post.setBody(scanner.nextLine());
 
         userDAO.createPost(currentUser.getId(), post);
     }
-    private static void getPosts(){
-        postDAO.getPostsByID(currentUser.getId()).forEach(p ->
-                System.out.println(p.getName() + " : " + p.getContent()));
+    private static void getPosts(long id){
+        contentDAO.findContentByUserId(id).forEach(p ->
+            System.out.println("ID#" + p.getId() + " : " + p.getTitle() + " : " + p.getCreatedAt()));
+    }
+    private static void getMyPosts(){
+        getPosts(currentUser.getId());
+    }
+    private static void getAnotherPosts(){
+        System.out.print("Введите id пользователя: ");
+        getPosts(scanner.nextLong());
+    }
+    private static void createComment(){
+        System.out.print("Введите ID поста: ");
+        Long id = scanner.nextLong();
+        scanner.nextLine();
+        Content content = contentDAO.findById(id);
+        System.out.println(content != null ? "Найдено: " + content.getTitle() : "Не найден");
+
+        if(content == null) return;
+
+        Comment comment = new Comment();
+        comment.setTitle(content.getTitle() + " комментирует " + currentUser.getName());
+        System.out.print("Введите содержание: ");
+        comment.setText(scanner.nextLine());
+
+        contentDAO.addComment(currentUser.getId(), content.getId(), comment);
     }
     private static void singOut(){
         currentUser = null;

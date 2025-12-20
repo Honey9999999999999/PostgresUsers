@@ -1,6 +1,6 @@
 package org.example.dao;
 
-import org.example.model.Post;
+import org.example.model.Content;
 import org.example.model.User;
 import org.example.util.HibernateUtil;
 import org.hibernate.Session;
@@ -65,7 +65,7 @@ public class UserDAO {
         }
     }
 
-    public void createPost(Long id, Post post) {
+    public void createPost(Long id, Content post) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();

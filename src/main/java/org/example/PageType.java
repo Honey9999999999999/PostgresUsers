@@ -2,5 +2,7 @@ package org.example;
 
 public enum PageType {
     Main,
-    User
+    User;
+
+    private String jojo;
 }
