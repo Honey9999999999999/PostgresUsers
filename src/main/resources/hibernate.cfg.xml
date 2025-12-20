@@ -20,5 +20,7 @@
 
         <!-- Регистрация класса -->
         <mapping class="org.example.model.User"/>
+        <mapping class="org.example.model.Role"/>
+        <mapping class="org.example.model.Post"/>
     </session-factory>
 </hibernate-configuration>

@@ -1,5 +1,6 @@
 package org.example.dao;
 
+import org.example.model.Post;
 import org.example.model.User;
 import org.example.util.HibernateUtil;
 import org.hibernate.Session;
@@ -56,6 +57,21 @@ public class UserDAO {
             User user = session.get(User.class, id);
             if (user != null) {
                 session.remove(user);
+            }
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            e.printStackTrace();
+        }
+    }
+
+    public void createPost(Long id, Post post) {
+        Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            User user = session.get(User.class, id);
+            if (user != null) {
+                user.addPost(post);
             }
             transaction.commit();
         } catch (Exception e) {
