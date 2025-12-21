@@ -64,19 +64,4 @@ public class UserDAO {
             e.printStackTrace();
         }
     }
-
-    public void createPost(Long id, Content post) {
-        Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
-            User user = session.get(User.class, id);
-            if (user != null) {
-                user.addPost(post);
-            }
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
-            e.printStackTrace();
-        }
-    }
 }

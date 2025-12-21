@@ -30,6 +30,12 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Content> posts = new ArrayList<>();
 
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Request> outRequests = new ArrayList<>();
+
+    @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Request> inRequests = new ArrayList<>();
+
     @Column(name = "created_at", updatable = false)
     private final LocalDateTime createdAt = LocalDateTime.now();
 

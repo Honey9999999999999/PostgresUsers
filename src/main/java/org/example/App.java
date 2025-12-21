@@ -1,60 +1,51 @@
 package org.example;
 
 import org.example.dao.ContentDAO;
+import org.example.dao.RequestDAO;
 import org.example.dao.UserDAO;
-import org.example.model.Article;
-import org.example.model.Comment;
-import org.example.model.Content;
-import org.example.model.User;
+import org.example.model.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class App 
 {
     private static UserDAO userDAO;
     private static ContentDAO contentDAO;
+    private static RequestDAO requestDAO;
     private static Scanner scanner;
 
-    private static final HashMap<PageType, String> menusMap = new HashMap<>(Map.of(
-        PageType.Main, "\n--- Главное меню ---\n" +
-                "1. Войти в профиль\n" +
-                "2. Создать пользователя\n" +
-                "3. Найти пользователя по ID\n" +
-                "4. Показать всех пользователей\n" +
-                "5. Обновить пользователя\n" +
-                "6. Удалить пользователя\n" +
-                "0. Выход\n" +
-                "Выберите действие: ",
-        PageType.User, "\n--- Меню пользователя ---\n" +
-                "1. Написать пост\n" +
-                "2. Показать все посты\n" +
-                "3. Показать посты другого пользователя\n" +
-                "4. Прокомментировать пост\n" +
-                "0. Выйти из профиля\n" +
-                "Выберите действие: "
-        )
+    private static final Map<PageType, String> headerMap = Map.of(
+            PageType.Main, "---Главное меню---",
+            PageType.User, "---Меню пользователя---"
     );
 
-    private static final HashMap<PageType, HashMap<Integer, Runnable>> actionsMap = new HashMap<>(Map.of(
-        PageType.Main, new HashMap<>(Map.of(
-            1, App::singIn,
-            2, App::createUser,
-            3, App::findUserById,
-            4, App::showAllUsers,
-            5, App::updateUser,
-            6, App::deleteUser,
-            0, App::closeApp
-        )),
-        PageType.User, new HashMap<>(Map.of(
-            1, App::createPost,
-            2, App::getMyPosts,
-            3, App::getAnotherPosts,
-            4, App::createComment,
-            0, App::singOut
-        ))
-    ));
+    private static final Map<PageType, Map<Integer, MenuItem>> menusMap = Map.of(
+            PageType.Main, new LinkedHashMap<>(),
+            PageType.User, new LinkedHashMap<>()
+    );
+
+    static {
+        Map<Integer, MenuItem> menu = menusMap.get(PageType.Main);
+
+        menu.put(1, new MenuItem("Войти в профиль", App::singIn));
+        menu.put(2, new MenuItem("Создать пользователя", App::createUser));
+        menu.put(3, new MenuItem("Найти пользователя по ID", App::findUserById));
+        menu.put(4, new MenuItem("Показать всех пользователей", App::showAllUsers));
+        menu.put(5, new MenuItem("Обновить пользователя", App::updateUser));
+        menu.put(6, new MenuItem("Удалить пользователя", App::deleteUser));
+        menu.put(0, new MenuItem("Выход", App::closeApp));
+
+        menu = menusMap.get(PageType.User);
+
+        menu.put(1, new MenuItem("Написать пост", App::createPost));
+        menu.put(2, new MenuItem("Показать все посты", App::getMyPosts));
+        menu.put(3, new MenuItem("Показать посты другого пользователя", App::getAnotherPosts));
+        menu.put(4, new MenuItem("Прокомментировать пост", App::createComment));
+        menu.put(5, new MenuItem("Отправить запрос в друзья", App::sendRequest));
+        menu.put(6, new MenuItem("Просмотреть отправленные запросы", App::getOutRequests));
+        menu.put(7, new MenuItem("Просмотреть входящие запросы", App::getInRequests));
+        menu.put(0, new MenuItem("Выйти из профиля", App::singOut));
+    }
 
     private static PageType currentPage = PageType.Main;
     private static User currentUser;
@@ -66,10 +57,10 @@ public class App
         initialize();
 
         while (isRunning) {
-            System.out.print(menusMap.get(currentPage));
+            printMenu();
             int choice = scanner.nextInt();
             scanner.nextLine();
-            actionsMap.get(currentPage).get(choice).run();
+            menusMap.get(currentPage).get(choice).getAction().run();
         }
 
         System.out.println("Программа завершена.");
@@ -78,7 +69,20 @@ public class App
     private static void initialize() {
         userDAO = new UserDAO();
         contentDAO = new ContentDAO();
+        requestDAO = new RequestDAO();
         scanner = new Scanner(System.in);
+    }
+
+    private static void printMenu(){
+        StringBuilder stringBuilder = new StringBuilder("\n").append(headerMap.get(currentPage));
+        Set<Map.Entry<Integer, MenuItem>> menuItems = menusMap.get(currentPage).entrySet();
+
+        for(var item : menuItems){
+            stringBuilder.append("\n").append(item.getKey()).append(": ").append(item.getValue().getTitle());
+        }
+        stringBuilder.append("\nВыберите действие: ");
+
+        System.out.print(stringBuilder);
     }
 
     private static void singIn(){
@@ -97,7 +101,7 @@ public class App
         System.out.println("Пользователь сохранен!");
     }
     private static User findUserById(){
-        System.out.print("Введите ID: ");
+        System.out.print("Введите ID пользователя: ");
         Long id = scanner.nextLong();
         User user = userDAO.findById(id);
         System.out.println(user != null ? "Найдено: " + user.getName() : "Не найден");
@@ -138,7 +142,7 @@ public class App
         System.out.print("Введите содержание: ");
         post.setBody(scanner.nextLine());
 
-        userDAO.createPost(currentUser.getId(), post);
+        contentDAO.createArticle(currentUser.getId(), post);
     }
     private static void getPosts(long id){
         contentDAO.findContentByUserId(id).forEach(p ->
@@ -161,11 +165,45 @@ public class App
         if(content == null) return;
 
         Comment comment = new Comment();
-        comment.setTitle(content.getTitle() + " комментирует " + currentUser.getName());
+        comment.setTitle(currentUser.getName() + " комментирует " + content.getTitle());
         System.out.print("Введите содержание: ");
         comment.setText(scanner.nextLine());
 
         contentDAO.addComment(currentUser.getId(), content.getId(), comment);
+    }
+    private static void sendRequest(){
+        User user = findUserById();
+        Request request = new Request();
+        request.setSender(currentUser);
+        request.setRecipient(user);
+
+        requestDAO.createRequest(request);
+    }
+    private static void getOutRequests(){
+        List<Request> requests = requestDAO.getSendRequests(currentUser.getId());
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for(Request request : requests){
+            stringBuilder.append("Запрос к ")
+                    .append(request.getRecipient().getName())
+                    .append(" от ")
+                    .append(request.getCreatedAt());
+        }
+
+        System.out.println(stringBuilder);
+    }
+    private static void getInRequests(){
+        List<Request> requests = requestDAO.getInRequests(currentUser.getId());
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for(Request request : requests){
+            stringBuilder.append("Запрос от ")
+                    .append(request.getSender().getName())
+                    .append(" от ")
+                    .append(request.getCreatedAt());
+        }
+
+        System.out.println(stringBuilder);
     }
     private static void singOut(){
         currentUser = null;

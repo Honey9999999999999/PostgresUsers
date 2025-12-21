@@ -20,11 +20,9 @@ public class ContentDAO {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "FROM Content c WHERE c.user.id = :userId ORDER BY c.createdAt DESC";
 
-            List<Content> results = session.createQuery(hql, Content.class)
+            return session.createQuery(hql, Content.class)
                     .setParameter("userId", userId)
                     .list();
-
-            return results;
         }
     }
 
@@ -38,6 +36,21 @@ public class ContentDAO {
             content.addComment(comment);
 
             transaction.commit();
+        }
+    }
+
+    public void createArticle(Long id, Content post) {
+        Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            User user = session.get(User.class, id);
+            if (user != null) {
+                user.addPost(post);
+            }
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            e.printStackTrace();
         }
     }
 }

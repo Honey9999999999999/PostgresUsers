@@ -24,5 +24,6 @@
         <mapping class="org.example.model.Content"/>
         <mapping class="org.example.model.Article"/>
         <mapping class="org.example.model.Comment"/>
+        <mapping class="org.example.model.Request"/>
     </session-factory>
 </hibernate-configuration>
