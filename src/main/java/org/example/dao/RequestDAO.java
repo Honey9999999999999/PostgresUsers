@@ -1,5 +1,7 @@
 package org.example.dao;
 
+
+import lombok.extern.slf4j.Slf4j;
 import org.example.model.Request;
 import org.example.util.HibernateUtil;
 import org.hibernate.Session;
@@ -7,6 +9,7 @@ import org.hibernate.Transaction;
 
 import java.util.List;
 
+@Slf4j
 public class RequestDAO {
     public void createRequest(Request request){
         Transaction transaction = null;
@@ -16,7 +19,7 @@ public class RequestDAO {
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            e.printStackTrace();
+            log.error("Ошибка при выполнении транзакции в RequestDAO.createRequest", e);
         }
     }
 

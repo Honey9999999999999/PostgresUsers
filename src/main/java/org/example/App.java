@@ -1,5 +1,6 @@
 package org.example;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.dao.ContentDAO;
 import org.example.dao.RequestDAO;
 import org.example.dao.UserDAO;
@@ -7,6 +8,7 @@ import org.example.model.*;
 
 import java.util.*;
 
+@Slf4j
 public class App 
 {
     private static UserDAO userDAO;
@@ -63,7 +65,7 @@ public class App
             menusMap.get(currentPage).get(choice).getAction().run();
         }
 
-        System.out.println("Программа завершена.");
+        log.info("Программа завершена.");
     }
 
     private static void initialize() {
@@ -169,7 +171,7 @@ public class App
         System.out.print("Введите содержание: ");
         comment.setText(scanner.nextLine());
 
-        contentDAO.addComment(currentUser.getId(), content.getId(), comment);
+        contentDAO.createComment(currentUser.getId(), content.getId(), comment);
     }
     private static void sendRequest(){
         User user = findUserById();

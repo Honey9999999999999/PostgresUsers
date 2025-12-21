@@ -1,12 +1,13 @@
 package org.example.dao;
 
-import org.example.model.Content;
+import lombok.extern.slf4j.Slf4j;
 import org.example.model.User;
 import org.example.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import java.util.List;
 
+@Slf4j
 public class UserDAO {
 
     // CREATE
@@ -18,7 +19,7 @@ public class UserDAO {
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            e.printStackTrace();
+            log.error("Ошибка при выполнении транзакции в UserDAO.save", e);
         }
     }
 
@@ -45,7 +46,7 @@ public class UserDAO {
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            e.printStackTrace();
+            log.error("Ошибка при выполнении транзакции в UserDAO.update", e);
         }
     }
 
@@ -54,14 +55,19 @@ public class UserDAO {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            User user = session.get(User.class, id);
-            if (user != null) {
-                session.remove(user);
-            }
+
+            int updatedEntities = session.createMutationQuery("delete from User u where u.id = :id")
+                    .setParameter("id", id)
+                    .executeUpdate();
+
             transaction.commit();
+
+            if (updatedEntities == 0) {
+                log.info("Пользователь с таким ID не найден, ничего не удалено.");
+            }
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            e.printStackTrace();
+            log.error("Ошибка при выполнении транзакции в UserDAO.delete", e);
         }
     }
 }
