@@ -18,7 +18,7 @@ public class FriendsPage extends BranchPage{
     private final FriendShipDAO friendShipDAO;
 
     private User currentUser;
-    private List<Friendship> friends;
+    private List<User> friends;
 
     public FriendsPage(Navigator navigator) {
         super(navigator);
@@ -60,11 +60,8 @@ public class FriendsPage extends BranchPage{
     protected String getBody(){
         StringJoiner stringJoiner = new StringJoiner("\n");
         int counter = 0;
-        for(Friendship friendship : friends){
-            User user = currentUser.getId().equals(friendship.getId().getUserId())
-                    ? userDAO.findById(friendship.getId().getFriendId())
-                    : userDAO.findById(friendship.getId().getUserId());
-            stringJoiner.add("#" + ++counter + " " + user.getName());
+        for(User friend : friends){
+            stringJoiner.add("#" + ++counter + " " + friend.getName());
         }
         stringJoiner.add("Всего: " + counter + ".");
 

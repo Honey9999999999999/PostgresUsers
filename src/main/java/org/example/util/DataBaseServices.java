@@ -1,8 +1,7 @@
 package org.example.util;
 
-import org.example.dao.ContentDAO;
-import org.example.dao.FriendShipDAO;
-import org.example.dao.UserDAO;
+import org.example.dao.*;
+import org.example.model.Message;
 
 public class DataBaseServices {
     private static DataBaseServices instance;
@@ -10,11 +9,15 @@ public class DataBaseServices {
     public final UserDAO userDAO;
     public final ContentDAO contentDAO;
     public final FriendShipDAO friendShipDAO;
+    public final GenericDAO<Message> messageGenericDAO;
+    public final MessageDAO messageDAO;
 
     private DataBaseServices(){
         userDAO = new UserDAO();
         contentDAO = new ContentDAO();
         friendShipDAO = new FriendShipDAO();
+        messageDAO = new MessageDAO();
+        messageGenericDAO = new GenericDAO<>(Message.class);
     }
 
     public static DataBaseServices getInstance(){

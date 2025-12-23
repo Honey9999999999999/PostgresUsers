@@ -20,6 +20,7 @@ public class Navigator {
         pageMap.put(NewsPage.class, new NewsPage(this));
         pageMap.put(FriendsPage.class, new FriendsPage(this));
         pageMap.put(InRequestsPage.class, new InRequestsPage(this));
+        pageMap.put(ChatPage.class, new ChatPage(this));
 
         currentPage = pageMap.get(MainPage.class);
         currentPage.onEnter();

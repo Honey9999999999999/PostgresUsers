@@ -3,10 +3,12 @@ package org.example.dao;
 import lombok.extern.slf4j.Slf4j;
 import org.example.model.Friendship;
 import org.example.model.User;
+import org.example.util.DataBaseServices;
 import org.example.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,10 +68,21 @@ public class FriendShipDAO {
         }
     }
 
-    public List<Friendship> getFriends(Long userId){
+    public List<User> getFriends(Long userId){
         try(Session session = HibernateUtil.getSessionFactory().openSession()){
+            UserDAO userDAO = DataBaseServices.getInstance().userDAO;
             String hql = "From Friendship f where f.status = 'CONFIRMED' AND (f.user.id = :userId OR f.friend.id = :userId)";
-            return session.createQuery(hql, Friendship.class).setParameter("userId", userId).list();
+
+            List<Friendship> friendships = session.createQuery(hql, Friendship.class).setParameter("userId", userId).list();
+            List<User> friends = new ArrayList<>();
+
+            for(Friendship friendship : friendships){
+                friends.add(userId.equals(friendship.getId().getUserId())
+                        ? userDAO.findById(friendship.getId().getFriendId())
+                        : userDAO.findById(friendship.getId().getUserId()));
+            }
+            
+            return friends;
         }
     }
 

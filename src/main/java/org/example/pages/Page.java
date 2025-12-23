@@ -1,5 +1,6 @@
 package org.example.pages;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public abstract class Page {
@@ -14,7 +15,7 @@ public abstract class Page {
 
     public Page(Navigator navigator){
         this.navigator = navigator;
-        scanner = new Scanner(System.in);
+        scanner = new Scanner(System.in, System.console() != null ? System.console().charset() : StandardCharsets.UTF_8);
         name = getName();
         menuMap = createMenu();
     }

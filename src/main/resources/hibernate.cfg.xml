@@ -6,7 +6,7 @@
     <session-factory>
         <!-- Настройки БД -->
         <property name="connection.driver_class">org.postgresql.Driver</property>
-        <property name="connection.url">jdbc:postgresql://localhost:5432/user_service_db</property>
+        <property name="connection.url">jdbc:postgresql://62.213.14.255:5437/user_service_db</property>
         <property name="connection.username">postgres</property>
         <property name="connection.password">postgres</property>
 
@@ -25,5 +25,6 @@
         <mapping class="org.example.model.Article"/>
         <mapping class="org.example.model.Comment"/>
         <mapping class="org.example.model.Friendship"/>
+        <mapping class="org.example.model.Message"/>
     </session-factory>
 </hibernate-configuration>

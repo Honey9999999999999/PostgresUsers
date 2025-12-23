@@ -33,6 +33,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Friendship> friendships = new ArrayList<>();
 
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Message> messages = new ArrayList<>();
+
     @Column(name = "created_at", updatable = false)
     private final LocalDateTime createdAt = LocalDateTime.now();
 
