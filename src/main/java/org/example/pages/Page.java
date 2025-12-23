@@ -7,6 +7,8 @@ public abstract class Page {
     protected Scanner scanner;
 
     protected String name;
+    protected String body = "";
+    private boolean isSetBody;
     protected LinkedHashMap<Integer, MenuItem> menuMap;
     protected final Queue<String> messages = new ArrayDeque<>();
 
@@ -20,15 +22,16 @@ public abstract class Page {
     public abstract String getName();
     protected abstract LinkedHashMap <Integer, MenuItem> createMenu();
 
-    public void onEnter(){}
+    public void onEnter(){ body = getBody(); }
     public void onUpdate(){ showPage(); chooseInteraction(); }
-    public void onExit(){}
+    public void onExit(){ isSetBody = false; }
 
     private void showPage(){
         showHeader();
-        String body = getBody();
-        if(!body.isEmpty())
+        setBody();
+        if(!body.isEmpty()){
             System.out.println(body);
+        }
         showMessages();
         showMenu();
     }
@@ -36,6 +39,12 @@ public abstract class Page {
         System.out.print("\n\n---" + name + "---\n");
     }
     protected String getBody(){ return  ""; }
+    private void setBody(){
+        if(!isSetBody){
+            body = getBody();
+            isSetBody = true;
+        }
+    }
     private void showMessages(){
         StringJoiner joiner = new StringJoiner("\n");
         while (!messages.isEmpty()){
@@ -56,6 +65,19 @@ public abstract class Page {
     }
 
     public void chooseInteraction(){
-        menuMap.get(scanner.nextInt()).action().run();
+        if (!scanner.hasNextInt()) {
+            System.out.println("Ошибка: введите число!");
+            scanner.nextLine();
+            return;
+        }
+
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+
+        if (menuMap.containsKey(choice)) {
+            menuMap.get(choice).action().run();
+        } else {
+            System.out.println("Такого пункта меню нет!");
+        }
     }
 }

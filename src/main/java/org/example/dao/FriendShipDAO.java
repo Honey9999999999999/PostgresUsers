@@ -61,7 +61,7 @@ public class FriendShipDAO {
 
     public List<Friendship> getInFriendShip(Long userId){
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
-            String hql = "From Friendship f where f.friend.id = :userId";
+            String hql = "From Friendship f where f.friend.id = :userId AND f.status = 'PENDING'";
             return session.createQuery(hql, Friendship.class).setParameter("userId", userId).list();
         }
     }
@@ -70,6 +70,16 @@ public class FriendShipDAO {
         try(Session session = HibernateUtil.getSessionFactory().openSession()){
             String hql = "From Friendship f where f.status = 'CONFIRMED' AND (f.user.id = :userId OR f.friend.id = :userId)";
             return session.createQuery(hql, Friendship.class).setParameter("userId", userId).list();
+        }
+    }
+
+    public void updateFriendship(Friendship friendship){
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            session.merge(friendship);
+            transaction.commit();
+        }catch (Exception e){
+            log.error("Ошибка при выполнении транзакции в FriendShipDAO.update", e);
         }
     }
 }

@@ -45,9 +45,9 @@ public class FriendsPage extends BranchPage{
 
     @Override
     public void onEnter(){
-        super.onEnter();
         currentUser = userDAO.findById(AuthService.getInstance().getCurrentUserId());
         friends = friendShipDAO.getFriends(currentUser.getId());
+        super.onEnter();
     }
 
     @Override
@@ -64,8 +64,7 @@ public class FriendsPage extends BranchPage{
             User user = currentUser.getId().equals(friendship.getId().getUserId())
                     ? userDAO.findById(friendship.getId().getFriendId())
                     : userDAO.findById(friendship.getId().getUserId());
-            stringJoiner.add(user.getName());
-            counter++;
+            stringJoiner.add("#" + ++counter + " " + user.getName());
         }
         stringJoiner.add("Всего: " + counter + ".");
 

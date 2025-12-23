@@ -38,9 +38,9 @@ public class InRequestsPage extends BranchPage{
 
     @Override
     public void onEnter(){
-        super.onEnter();
         currentUser = DataBaseServices.getInstance().userDAO.findById(AuthService.getInstance().getCurrentUserId());
         requests.addAll(friendShipDAO.getInFriendShip(currentUser.getId()));
+        super.onEnter();
     }
     @Override
     public void onExit(){
@@ -67,7 +67,17 @@ public class InRequestsPage extends BranchPage{
     }
 
     private void acceptRequest(){
+        System.out.print("Выберите номер запроса: ");
+        int value = scanner.nextInt();
 
+        while(--value >= requests.size()){
+            System.out.print(body + "\nВыберите номер в пределах списка: ");
+            value = scanner.nextInt();
+        }
+
+        Friendship friendship = requests.get(value);
+        friendship.setStatus("CONFIRMED");
+        friendShipDAO.updateFriendship(friendship);
     }
     private void refuseRequest(){
 
