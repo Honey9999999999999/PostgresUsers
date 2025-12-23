@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,11 +25,11 @@ public class Content {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "created_at", updatable = false)
-    private final LocalDateTime createdAt = LocalDateTime.now();
+    @Column(name = "created_at", updatable = false, nullable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "content", cascade = CascadeType.ALL)
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
     public void addUser(User user){
         this.user = user;

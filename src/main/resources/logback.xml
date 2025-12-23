@@ -2,22 +2,27 @@
     <!-- Настройка вывода в консоль -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <!-- Убираем лишние даты и потоки, оставляем только само сообщение -->
+            <!-- Оставляем чистый вывод сообщения -->
             <pattern>%msg%n</pattern>
         </encoder>
     </appender>
 
-    <!-- Уровень ERROR для всего Hibernate (скроет INFO и WARN) -->
+    <!-- Глушим Hibernate до критических ошибок -->
     <logger name="org.hibernate" level="ERROR" />
-
-    <!-- Отключаем логгер транзакций и метаданных -->
-    <logger name="org.hibernate.engine.transaction" level="ERROR" />
-    <logger name="org.hibernate.tool.schema" level="ERROR" />
-
-    <!-- Если хотите видеть SQL-запросы в чистом виде, оставьте DEBUG, если нет — ставьте ERROR -->
     <logger name="org.hibernate.SQL" level="ERROR" />
 
-    <root level="ERROR">
+    <!-- Глушим прочие системные логи (например, пул соединений) -->
+    <logger name="com.zaxxer.hikari" level="ERROR" />
+
+    <!--
+      Настраиваем ваш проект.
+      Замените 'org.example' на ваш корневой пакет.
+      Это позволит видеть ваши log.info(), но игнорировать чужие.
+    -->
+    <logger name="org.example" level="INFO" />
+
+    <!-- Root уровень ставим в INFO, чтобы ваши логи проходили -->
+    <root level="INFO">
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>

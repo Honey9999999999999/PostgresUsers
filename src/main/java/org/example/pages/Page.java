@@ -28,7 +28,7 @@ public abstract class Page {
         showHeader();
         String body = getBody();
         if(!body.isEmpty())
-            System.out.print(body);
+            System.out.println(body);
         showMessages();
         showMenu();
     }
@@ -48,7 +48,7 @@ public abstract class Page {
         Set<Map.Entry<Integer, MenuItem>> menuItems = menuMap.entrySet();
 
         for(var item : menuItems){
-            stringBuilder.append("\n").append(item.getKey()).append(": ").append(item.getValue().getTitle());
+            stringBuilder.append("\n").append(item.getKey()).append(": ").append(item.getValue().title());
         }
         stringBuilder.append("\nВыберите действие: ");
 
@@ -56,6 +56,6 @@ public abstract class Page {
     }
 
     public void chooseInteraction(){
-        menuMap.get(scanner.nextInt()).getAction().run();
+        menuMap.get(scanner.nextInt()).action().run();
     }
 }
