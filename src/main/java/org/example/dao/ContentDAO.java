@@ -1,6 +1,7 @@
 package org.example.dao;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.model.Article;
 import org.example.model.Comment;
 import org.example.model.Content;
 import org.example.model.User;
@@ -23,6 +24,26 @@ public class ContentDAO {
             String hql = "FROM Content c WHERE c.user.id = :userId ORDER BY c.createdAt DESC";
 
             return session.createQuery(hql, Content.class)
+                    .setParameter("userId", userId)
+                    .list();
+        }
+    }
+
+    public List<Article> findArticleByUserId(Long userId) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            String hql = "FROM Article c WHERE c.user.id = :userId ORDER BY c.createdAt DESC";
+
+            return session.createQuery(hql, Article.class)
+                    .setParameter("userId", userId)
+                    .list();
+        }
+    }
+
+    public List<Comment> findCommentByUserId(Long userId) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            String hql = "FROM Comment c WHERE c.user.id = :userId ORDER BY c.createdAt DESC";
+
+            return session.createQuery(hql, Comment.class)
                     .setParameter("userId", userId)
                     .list();
         }

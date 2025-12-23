@@ -23,7 +23,7 @@ public class RequestDAO {
         }
     }
 
-    public List<Request> getSendRequests(Long senderId){
+    public List<Request> getOutRequests(Long senderId){
         try(Session session = HibernateUtil.getSessionFactory().openSession()){
             String hql = "FROM Request r WHERE r.sender.id = :userId";
 

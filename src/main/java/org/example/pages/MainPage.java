@@ -1,13 +1,12 @@
 package org.example.pages;
 
-import org.example.MenuItem;
 import org.example.auth.AuthService;
 import org.example.dao.UserDAO;
 import org.example.model.User;
 
 import java.util.LinkedHashMap;
 
-public class MainPage extends Page{
+public class MainPage extends Page {
     private final UserDAO userDAO;
 
     public MainPage(Navigator navigator) {
@@ -43,7 +42,6 @@ public class MainPage extends Page{
         }
         scanner.nextLine();
     }
-
     private void createUser(){
         User user = new User();
         System.out.print("Введите имя: ");

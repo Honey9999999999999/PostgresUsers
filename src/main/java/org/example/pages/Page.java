@@ -1,11 +1,7 @@
 package org.example.pages;
 
-import org.example.MenuItem;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.Set;
+import java.lang.reflect.Type;
+import java.util.*;
 
 public abstract class Page {
     protected Navigator navigator;
@@ -13,6 +9,7 @@ public abstract class Page {
 
     protected String name;
     protected LinkedHashMap<Integer, MenuItem> menuMap;
+    protected final Queue<String> messages = new ArrayDeque<>();
 
     public Page(Navigator navigator){
         this.navigator = navigator;
@@ -25,11 +22,32 @@ public abstract class Page {
     protected abstract LinkedHashMap <Integer, MenuItem> createMenu();
 
     public void onEnter(){}
-    public void onUpdate(){ showMenu(); chooseInteraction(); }
-    public void onExit(){}
+    public void onUpdate(){ showPage(); chooseInteraction(); }
+    public void onExit(){ navigator.addToHistory(this.getClass()); }
 
-    public void showMenu(){
-        StringBuilder stringBuilder = new StringBuilder("\n").append("---").append(name).append("---");
+    private void showPage(){
+        showHeader();
+        String body = getBody();
+        if(!body.isEmpty())
+            System.out.print(body);
+        showMenu();
+    }
+    private void showHeader(){
+        System.out.print("\n---" + name + "---\n");
+    }
+    protected String getBody(){
+        String body = "";
+
+        StringBuilder stringBuilder = new StringBuilder();
+        while (!messages.isEmpty()){
+            stringBuilder.append("\n").append(messages.poll());
+            body = stringBuilder.toString();
+        }
+
+        return body;
+    }
+    private void showMenu(){
+        StringBuilder stringBuilder = new StringBuilder();
         Set<Map.Entry<Integer, MenuItem>> menuItems = menuMap.entrySet();
 
         for(var item : menuItems){
