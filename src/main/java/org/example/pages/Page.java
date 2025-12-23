@@ -1,6 +1,5 @@
 package org.example.pages;
 
-import java.lang.reflect.Type;
 import java.util.*;
 
 public abstract class Page {
@@ -23,7 +22,7 @@ public abstract class Page {
 
     public void onEnter(){}
     public void onUpdate(){ showPage(); chooseInteraction(); }
-    public void onExit(){ navigator.addToHistory(this.getClass()); }
+    public void onExit(){}
 
     private void showPage(){
         showHeader();

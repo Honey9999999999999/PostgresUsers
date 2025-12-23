@@ -6,7 +6,7 @@ import org.example.util.DataBaseServices;
 
 import java.util.LinkedHashMap;
 
-public class UserPage extends RootPage {
+public class UserPage extends Page {
     private User currentUser;
 
     public UserPage(Navigator navigator) {

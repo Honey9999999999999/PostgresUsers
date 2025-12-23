@@ -74,19 +74,10 @@ public class FriendsPage extends BranchPage{
                     .append("\n");
         }
 
-        messages.add(stringBuilder.toString());
+        if(!stringBuilder.isEmpty())
+            messages.add(stringBuilder.toString());
     }
     private void getInRequests(){
-        List<Request> requests = requestDAO.getInRequests(currentUser.getId());
-        StringBuilder stringBuilder = new StringBuilder();
-
-        for(Request request : requests){
-            stringBuilder.append("Запрос от ")
-                    .append(request.getSender().getName())
-                    .append(" от ")
-                    .append(request.getCreatedAt());
-        }
-
-        System.out.println(stringBuilder);
+        navigator.enterIn(InRequestsPage.class);
     }
 }

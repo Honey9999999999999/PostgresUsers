@@ -9,8 +9,7 @@ public class App
 {
     private static final Navigator navigator = Navigator.getInstance();
 
-    public static void main( String[] args )
-    {
+    public static void main( String[] args ){
         while (navigator.isRunning()) {
             navigator.update();
         }

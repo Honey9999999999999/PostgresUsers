@@ -4,7 +4,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayDeque;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Queue;
 
 public class Navigator {
     private static Navigator instance;
@@ -12,7 +11,7 @@ public class Navigator {
     private final Map<Type, Page> pageMap;
     private Page currentPage;
 
-    private final Queue<Type> history = new ArrayDeque<>();
+    private final ArrayDeque<Type> history = new ArrayDeque<>();
 
     private Navigator(){
         pageMap = new LinkedHashMap<>();
@@ -20,6 +19,7 @@ public class Navigator {
         pageMap.put(UserPage.class, new UserPage(this));
         pageMap.put(NewsPage.class, new NewsPage(this));
         pageMap.put(FriendsPage.class, new FriendsPage(this));
+        pageMap.put(InRequestsPage.class, new InRequestsPage(this));
 
         currentPage = pageMap.get(MainPage.class);
         currentPage.onEnter();
@@ -34,20 +34,20 @@ public class Navigator {
 
     public <T extends Type> void enterIn(T page){
         currentPage.onExit();
+        history.push(currentPage.getClass());
         currentPage = pageMap.get(page);
         currentPage.onEnter();
+        tryClearHistory();
     }
 
     public void update(){
         currentPage.onUpdate();
     }
 
-    public void addToHistory(Type page){
-        history.add(page);
-    }
-
-    public void clearHistory(){
-        history.clear();
+    private void tryClearHistory(){
+        if(!(currentPage instanceof BranchPage)){
+            history.clear();
+        }
     }
 
     public boolean isRunning(){
@@ -55,7 +55,10 @@ public class Navigator {
     }
 
     public void getBack(){
-        enterIn(history.poll());
+        currentPage.onExit();
+        currentPage = pageMap.get(history.pop());
+        currentPage.onEnter();
+        tryClearHistory();
     }
 
     public void closeAll(){
