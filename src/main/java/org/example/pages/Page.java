@@ -29,21 +29,19 @@ public abstract class Page {
         String body = getBody();
         if(!body.isEmpty())
             System.out.print(body);
+        showMessages();
         showMenu();
     }
     private void showHeader(){
-        System.out.print("\n---" + name + "---\n");
+        System.out.print("\n\n---" + name + "---\n");
     }
-    protected String getBody(){
-        String body = "";
-
-        StringBuilder stringBuilder = new StringBuilder();
+    protected String getBody(){ return  ""; }
+    private void showMessages(){
+        StringJoiner joiner = new StringJoiner("\n");
         while (!messages.isEmpty()){
-            stringBuilder.append("\n").append(messages.poll());
-            body = stringBuilder.toString();
+            joiner.add(messages.poll());
         }
-
-        return body;
+        System.out.print(joiner);
     }
     private void showMenu(){
         StringBuilder stringBuilder = new StringBuilder();

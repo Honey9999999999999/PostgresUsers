@@ -33,7 +33,7 @@ public class FriendsPage extends BranchPage{
         LinkedHashMap<Integer, MenuItem> menuMap = new LinkedHashMap<>();
 
         menuMap.put(1, new MenuItem("Отправить запрос в друзья", this::sendRequest));
-        menuMap.put(2, new MenuItem("Просмотреть отправленные запросы", this::getOutRequests));
+        menuMap.put(2, new MenuItem("Просмотреть исходящие запросы", this::getOutRequests));
         menuMap.put(3, new MenuItem("Просмотреть входящие запросы", this::getInRequests));
 
         return menuMap;
@@ -64,10 +64,10 @@ public class FriendsPage extends BranchPage{
     }
     private void getOutRequests(){
         List<Request> requests = requestDAO.getOutRequests(currentUser.getId());
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder("-Исходящие запросы-\n");
 
         for(Request request : requests){
-            stringBuilder.append("Запрос к ")
+            stringBuilder.append("\t* Запрос к ")
                     .append(request.getRecipient().getName())
                     .append(" от ")
                     .append(request.getCreatedAt())

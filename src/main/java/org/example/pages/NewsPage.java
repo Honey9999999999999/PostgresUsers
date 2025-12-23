@@ -59,10 +59,11 @@ public class NewsPage extends BranchPage{
 
     @Override
     protected String getBody(){
-        StringBuilder stringBuilder = new StringBuilder("\n");
+        StringBuilder stringBuilder = new StringBuilder();
 
         for(int i = 0; i < posts.size(); i++){
-            stringBuilder.append(i + 1)
+            stringBuilder.append("#")
+                    .append(i + 1)
                     .append(": ")
                     .append(posts.get(i).getTitle())
                     .append(" : ")
