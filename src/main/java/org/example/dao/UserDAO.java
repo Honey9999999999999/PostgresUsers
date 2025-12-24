@@ -1,6 +1,8 @@
 package org.example.dao;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.model.Password;
+import org.example.model.User;
 import org.example.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -8,36 +10,37 @@ import org.hibernate.Transaction;
 import java.util.List;
 
 @Slf4j
-public record GenericDAO<T>(Class<T> entityClass) {
-    // CREATE
-    public void save(T obj) {
+public class UserDAO {
+    public void save(User obj, String password) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
+            Password pw = new Password(obj, password);
+            obj.setPassword(pw);
             session.persist(obj);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            log.error("Ошибка при выполнении транзакции в GenericDAO.save", e);
+            log.error("Ошибка при выполнении транзакции в UserDAO.save", e);
         }
     }
 
     // READ (один)
-    public T findById(Long id) {
+    public User findById(Long id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.get(entityClass, id);
+            return session.get(User.class, id);
         }
     }
 
     // READ (все)
-    public List<T> findAll() {
+    public List<User> findAll() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.createQuery("FROM " + entityClass.getName(), entityClass).list();
+            return session.createQuery("FROM User", User.class).list();
         }
     }
 
     // UPDATE
-    public void update(T obj) {
+    public void update(User obj) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
@@ -45,7 +48,7 @@ public record GenericDAO<T>(Class<T> entityClass) {
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            log.error("Ошибка при выполнении транзакции в GenericDAO.update", e);
+            log.error("Ошибка при выполнении транзакции в UserDAO.update", e);
         }
     }
 
@@ -55,7 +58,7 @@ public record GenericDAO<T>(Class<T> entityClass) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
 
-            int updatedEntities = session.createMutationQuery("DELETE FROM \" + entityClass.getName() + \" WHERE id = :id")
+            int updatedEntities = session.createMutationQuery("DELETE FROM User WHERE id = :id")
                     .setParameter("id", id)
                     .executeUpdate();
 
@@ -66,7 +69,7 @@ public record GenericDAO<T>(Class<T> entityClass) {
             }
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            log.error("Ошибка при выполнении транзакции в GenericDAO.delete", e);
+            log.error("Ошибка при выполнении транзакции в UserDAO.delete", e);
         }
     }
 }

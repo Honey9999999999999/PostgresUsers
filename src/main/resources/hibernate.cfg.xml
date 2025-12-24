@@ -38,5 +38,6 @@
         <mapping class="org.example.model.Comment"/>
         <mapping class="org.example.model.Friendship"/>
         <mapping class="org.example.model.Message"/>
+        <mapping class="org.example.model.Password"/>
     </session-factory>
 </hibernate-configuration>

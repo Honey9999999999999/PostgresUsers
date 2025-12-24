@@ -1,18 +1,20 @@
 package org.example.pages;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.auth.AuthService;
-import org.example.dao.GenericDAO;
+import org.example.dao.UserDAO;
 import org.example.model.User;
 import org.example.util.DataBaseServices;
 
 import java.util.LinkedHashMap;
 
+@Slf4j
 public class MainPage extends Page {
-    private final GenericDAO<User> userDAO;
+    private final UserDAO userDAO;
 
     public MainPage(Navigator navigator) {
         super(navigator);
-        userDAO = DataBaseServices.getInstance().userGenericDAO;
+        userDAO = DataBaseServices.getInstance().userDAO;
     }
 
     @Override
@@ -37,11 +39,17 @@ public class MainPage extends Page {
 
     private void singIn(){
         System.out.print("Введите ID пользователя: ");
-
-        if(AuthService.getInstance().login(scanner.nextLong())){
-            navigator.enterIn(UserPage.class);
-        }
+        Long id = scanner.nextLong();
         scanner.nextLine();
+        System.out.print("Введите пароль: ");
+        String password = scanner.nextLine();
+
+        if(AuthService.getInstance().login(id, password)){
+            navigator.enterIn(UserPage.class);
+            log.info("Успешно!");
+            return;
+        }
+        log.info("Неправильные логин или пароль!");
     }
     private void createUser(){
         User user = new User();
@@ -51,7 +59,10 @@ public class MainPage extends Page {
         user.setEmail(scanner.nextLine());
         System.out.print("Введите возраст: ");
         user.setAge(scanner.nextInt());
-        userDAO.save(user);
+        scanner.nextLine();
+        System.out.print("Введите пароль: ");
+        String pass = scanner.nextLine();
+        userDAO.save(user, pass);
         System.out.println("Пользователь сохранен!");
     }
     private User findUserById(){

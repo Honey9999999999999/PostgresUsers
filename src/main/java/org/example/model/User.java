@@ -39,6 +39,9 @@ public class User {
     @Column(name = "created_at", updatable = false)
     private final LocalDateTime createdAt = LocalDateTime.now();
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Password password;
+
     // Обязательно: пустой конструктор
     public User() {
         Role defaultRole = new Role();

@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.auth.AuthService;
 import org.example.dao.FriendShipDAO;
 import org.example.dao.GenericDAO;
+import org.example.dao.UserDAO;
 import org.example.model.Friendship;
 import org.example.model.User;
 import org.example.util.DataBaseServices;
@@ -14,7 +15,7 @@ import java.util.StringJoiner;
 
 @Slf4j
 public class FriendsPage extends BranchPage{
-    private final GenericDAO<User> userDAO;
+    private final UserDAO userDAO;
     private final FriendShipDAO friendShipDAO;
 
     private User currentUser;
@@ -23,7 +24,7 @@ public class FriendsPage extends BranchPage{
     public FriendsPage(Navigator navigator) {
         super(navigator);
 
-        userDAO = DataBaseServices.getInstance().userGenericDAO;
+        userDAO = DataBaseServices.getInstance().userDAO;
         friendShipDAO = DataBaseServices.getInstance().friendShipDAO;
     }
 
@@ -45,7 +46,7 @@ public class FriendsPage extends BranchPage{
 
     @Override
     public void onEnter(){
-        currentUser = userDAO.findById(AuthService.getInstance().getCurrentUserId());
+        currentUser = AuthService.getInstance().getCurrentUser();
         friends = friendShipDAO.getFriends(currentUser.getId());
         super.onEnter();
     }
@@ -78,7 +79,7 @@ public class FriendsPage extends BranchPage{
             return;
         }
 
-        if(user.getId().equals(AuthService.getInstance().getCurrentUserId())){
+        if(user.getId().equals(currentUser.getId())){
             log.info("Нельзя отправлять запрос самому себе!");
             return;
         }

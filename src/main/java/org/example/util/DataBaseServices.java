@@ -7,18 +7,20 @@ import org.example.model.User;
 public class DataBaseServices {
     private static DataBaseServices instance;
 
-    public final GenericDAO<User> userGenericDAO;
+    public final UserDAO userDAO;
     public final ContentDAO contentDAO;
     public final FriendShipDAO friendShipDAO;
     public final GenericDAO<Message> messageGenericDAO;
     public final MessageDAO messageDAO;
+    public final PasswordDAO passwordDAO;
 
     private DataBaseServices(){
-        userGenericDAO = new GenericDAO<>(User.class);
+        userDAO = new UserDAO();
         contentDAO = new ContentDAO();
         friendShipDAO = new FriendShipDAO();
         messageDAO = new MessageDAO();
         messageGenericDAO = new GenericDAO<>(Message.class);
+        passwordDAO = new PasswordDAO();
     }
 
     public static DataBaseServices getInstance(){

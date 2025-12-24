@@ -3,6 +3,7 @@ package org.example.pages;
 import org.example.auth.AuthService;
 import org.example.dao.ContentDAO;
 import org.example.dao.GenericDAO;
+import org.example.dao.UserDAO;
 import org.example.model.Article;
 import org.example.model.Comment;
 import org.example.model.Content;
@@ -15,7 +16,7 @@ import java.util.List;
 
 public class NewsPage extends BranchPage{
     private final ContentDAO contentDAO;
-    private final GenericDAO<User> userDAO;
+    private final UserDAO userDAO;
     private User currentUser;
 
     private final List<Article> posts = new ArrayList<>();
@@ -24,7 +25,7 @@ public class NewsPage extends BranchPage{
         super(navigator);
 
         contentDAO = DataBaseServices.getInstance().contentDAO;
-        userDAO = DataBaseServices.getInstance().userGenericDAO;
+        userDAO = DataBaseServices.getInstance().userDAO;
     }
 
     @Override
@@ -47,7 +48,7 @@ public class NewsPage extends BranchPage{
     @Override
     public void onEnter(){
         super.onEnter();
-        currentUser = userDAO.findById(AuthService.getInstance().getCurrentUserId());
+        currentUser = AuthService.getInstance().getCurrentUser();
         posts.addAll(contentDAO.findArticleByUserId(currentUser.getId()));
     }
     @Override
@@ -83,14 +84,14 @@ public class NewsPage extends BranchPage{
         System.out.print("Введите содержание: ");
         post.setBody(scanner.nextLine());
 
-        contentDAO.createArticle(AuthService.getInstance().getCurrentUserId(), post);
+        contentDAO.createArticle(currentUser.getId(), post);
     }
     private void getPosts(long id){
         contentDAO.findContentByUserId(id).forEach(p ->
                 System.out.println("ID#" + p.getId() + " : " + p.getTitle() + " : " + p.getCreatedAt()));
     }
     private void getMyPosts(){
-        getPosts(AuthService.getInstance().getCurrentUserId());
+        getPosts(currentUser.getId());
     }
     private void getAnotherPosts(){
         System.out.print("Введите id пользователя: ");

@@ -70,7 +70,7 @@ public class FriendShipDAO {
 
     public List<User> getFriends(Long userId){
         try(Session session = HibernateUtil.getSessionFactory().openSession()){
-            GenericDAO<User> userDAO = DataBaseServices.getInstance().userGenericDAO;
+            UserDAO userDAO = DataBaseServices.getInstance().userDAO;
             String hql = "From Friendship f where f.status = 'CONFIRMED' AND (f.user.id = :userId OR f.friend.id = :userId)";
 
             List<Friendship> friendships = session.createQuery(hql, Friendship.class).setParameter("userId", userId).list();

@@ -33,7 +33,7 @@ public class UserPage extends Page {
     @Override
     public void onEnter(){
         super.onEnter();
-        currentUser = DataBaseServices.getInstance().userGenericDAO.findById(AuthService.getInstance().getCurrentUserId());
+        currentUser = AuthService.getInstance().getCurrentUser();
     }
 
     @Override

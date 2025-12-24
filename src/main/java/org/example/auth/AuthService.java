@@ -1,19 +1,16 @@
 package org.example.auth;
 
-import org.example.dao.GenericDAO;
+import lombok.Getter;
 import org.example.model.User;
 import org.example.util.DataBaseServices;
 
+@Getter
 public class AuthService {
 
     private static AuthService instance;
+    private User currentUser;
 
-    private final GenericDAO<User> userDAO;
-    private Long currentUserId = 0L;
-
-    private AuthService(){
-        userDAO = DataBaseServices.getInstance().userGenericDAO;
-    }
+    private AuthService(){}
 
     public static synchronized AuthService getInstance() {
         if (instance == null) {
@@ -22,13 +19,12 @@ public class AuthService {
         return instance;
     }
 
-    public Long getCurrentUserId() {
-        return currentUserId;
-    }
+    public boolean login(Long userId, String password) {
+        User tempUser = DataBaseServices.getInstance().userDAO.findById(userId);
 
-    public boolean login(Long userId) {
-        if(userDAO.findById(userId) != null){
-            currentUserId = userId;
+        if(tempUser != null
+                && DataBaseServices.getInstance().passwordDAO.isCorrectPassword(userId, password)){
+            currentUser = tempUser;
             return true;
         }
 
@@ -36,10 +32,10 @@ public class AuthService {
     }
 
     public void logout() {
-        this.currentUserId = 0L;
+        this.currentUser = null;
     }
 
     public boolean isAuth(){
-        return currentUserId > 0;
+        return currentUser != null;
     }
 }

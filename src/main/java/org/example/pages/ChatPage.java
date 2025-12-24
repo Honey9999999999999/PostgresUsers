@@ -35,7 +35,7 @@ public class ChatPage extends BranchPage{
 
     @Override
     public void onEnter(){
-        currentUser = DataBaseServices.getInstance().userGenericDAO.findById(AuthService.getInstance().getCurrentUserId());
+        currentUser = AuthService.getInstance().getCurrentUser();
         friend = chooseFriend();
 
         userMap = Map.of(
@@ -57,7 +57,7 @@ public class ChatPage extends BranchPage{
     }
 
     private User chooseFriend(){
-        List<User> friends = DataBaseServices.getInstance().friendShipDAO.getFriends(AuthService.getInstance().getCurrentUserId());
+        List<User> friends = DataBaseServices.getInstance().friendShipDAO.getFriends(currentUser.getId());
 
         StringJoiner stringJoiner = new StringJoiner("\n").add("");
         int counter = 0;
