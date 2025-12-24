@@ -1,17 +1,18 @@
 package org.example.pages;
 
 import org.example.auth.AuthService;
-import org.example.dao.UserDAO;
+import org.example.dao.GenericDAO;
 import org.example.model.User;
+import org.example.util.DataBaseServices;
 
 import java.util.LinkedHashMap;
 
 public class MainPage extends Page {
-    private final UserDAO userDAO;
+    private final GenericDAO<User> userDAO;
 
     public MainPage(Navigator navigator) {
         super(navigator);
-        userDAO = new UserDAO();
+        userDAO = DataBaseServices.getInstance().userGenericDAO;
     }
 
     @Override

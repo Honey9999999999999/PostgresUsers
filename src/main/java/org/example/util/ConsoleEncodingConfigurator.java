@@ -35,6 +35,9 @@ public class ConsoleEncodingConfigurator extends ContextAwareBase implements Con
         lc.getLogger("ROOT").setLevel(ch.qos.logback.classic.Level.ERROR);
         lc.getLogger("ROOT").addAppender(ca);
 
+        ch.qos.logback.classic.Logger hibernateStatLogger = lc.getLogger("org.hibernate.stat");
+        hibernateStatLogger.setLevel(ch.qos.logback.classic.Level.DEBUG); // Статистика часто идет на DEBUG уровне
+
         // Устанавливаем уровень INFO только для вашего пакета
         // Замените "com.your.package" на корень вашего проекта
         ch.qos.logback.classic.Logger myLogger = lc.getLogger("org.example");

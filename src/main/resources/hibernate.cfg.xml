@@ -18,6 +18,18 @@
         <property name="format_sql">false</property>
         <property name="hbm2ddl.auto">update</property>
 
+        <property name="hibernate.generate_statistics">true</property>
+
+        <!-- Количество соединений в пуле (по умолчанию 10) -->
+        <property name="hibernate.hikari.maximumPoolSize">10</property>
+        <!-- Время ожидания получения соединения из пула (в мс) -->
+        <property name="hibernate.hikari.connectionTimeout">30000</property>
+        <!-- Минимальное количество "спящих" соединений -->
+        <property name="hibernate.hikari.minimumIdle">5</property>
+
+        <!-- Максимальное время жизни соединения в пуле -->
+        <property name="hibernate.hikari.maxLifetime">1800000</property>
+
         <!-- Регистрация класса -->
         <mapping class="org.example.model.User"/>
         <mapping class="org.example.model.Role"/>

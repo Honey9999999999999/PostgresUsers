@@ -7,11 +7,14 @@ import org.example.util.DataBaseServices;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringJoiner;
 
 public class ChatPage extends BranchPage{
     private User currentUser;
     private User friend;
+
+    private Map<Long, User> userMap;
 
     public ChatPage(Navigator navigator) {
         super(navigator);
@@ -25,7 +28,6 @@ public class ChatPage extends BranchPage{
     @Override
     protected LinkedHashMap<Integer, MenuItem> createMenu() {
         LinkedHashMap<Integer, MenuItem> menuMap = new LinkedHashMap<>();
-
         menuMap.put(1, new MenuItem("Отправить сообщение", this::sendMessage));
 
         return menuMap;
@@ -33,8 +35,13 @@ public class ChatPage extends BranchPage{
 
     @Override
     public void onEnter(){
-        currentUser = DataBaseServices.getInstance().userDAO.findById(AuthService.getInstance().getCurrentUserId());
-        chooseFriend();
+        currentUser = DataBaseServices.getInstance().userGenericDAO.findById(AuthService.getInstance().getCurrentUserId());
+        friend = chooseFriend();
+
+        userMap = Map.of(
+          currentUser.getId(), currentUser,
+          friend.getId(), friend
+        );
     }
 
     @Override
@@ -43,13 +50,13 @@ public class ChatPage extends BranchPage{
         StringJoiner stringJoiner = new StringJoiner("\n");
 
         for(Message message : messages){
-            stringJoiner.add(message.getSender().getName() + " говорит: " + message.getText());
+            stringJoiner.add(userMap.get(message.getId().getSenderId()).getName() + " : " + message.getText());
         }
 
         return stringJoiner.toString();
     }
 
-    private void chooseFriend(){
+    private User chooseFriend(){
         List<User> friends = DataBaseServices.getInstance().friendShipDAO.getFriends(AuthService.getInstance().getCurrentUserId());
 
         StringJoiner stringJoiner = new StringJoiner("\n").add("");
@@ -61,14 +68,14 @@ public class ChatPage extends BranchPage{
                 .add("Введите номер друга: ");
         System.out.print(stringJoiner);
 
-        friend =  friends.get(scanner.nextInt() - 1);
+        User friend =  friends.get(scanner.nextInt() - 1);
         scanner.nextLine();
+
+        return friend;
     }
 
     private void sendMessage(){
-        Message message = new Message();
-        message.setSender(currentUser);
-        message.setRecipient(friend);
+        Message message = new Message(currentUser, friend);
 
         System.out.print("Введите сообщение: ");
         message.setText(scanner.nextLine());

@@ -21,6 +21,12 @@
             <version>6.6.1.Final</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-hikaricp</artifactId>
+            <version>6.6.1.Final</version> <!-- Используйте актуальную версию для 2025 -->
+        </dependency>
+
         <!-- Lombok (версия конца 2025) -->
         <dependency>
             <groupId>org.projectlombok</groupId>

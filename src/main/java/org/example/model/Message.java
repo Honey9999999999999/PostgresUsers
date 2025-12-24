@@ -1,6 +1,7 @@
 package org.example.model;
 
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,21 +12,41 @@ import java.time.LocalDateTime;
 @Getter @Setter
 @NoArgsConstructor
 public class Message {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Embeddable
+    @Getter @Setter
+    @EqualsAndHashCode
+    @NoArgsConstructor
+    public static class MessageId{
+        private Long senderId;
+        private Long recipientId;
+        private LocalDateTime createdAt;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+        public MessageId(Long senderId, Long recipientId){
+            this.senderId = senderId;
+            this.recipientId = recipientId;
+            createdAt = LocalDateTime.now();
+        }
+    }
+
+    @EmbeddedId
+    private MessageId id = new MessageId();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("senderId")
     @JoinColumn(name = "sender_id")
     private User sender;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("recipientId")
     @JoinColumn(name = "recipient_id")
     private User recipient;
 
     @Column(name = "text")
     private String text;
 
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    public Message(User sender, User recipient){
+        id = new MessageId(sender.getId(), recipient.getId());
+        this.sender = sender;
+        this.recipient = recipient;
+    }
 }

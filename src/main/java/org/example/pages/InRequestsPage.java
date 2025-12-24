@@ -38,7 +38,7 @@ public class InRequestsPage extends BranchPage{
 
     @Override
     public void onEnter(){
-        currentUser = DataBaseServices.getInstance().userDAO.findById(AuthService.getInstance().getCurrentUserId());
+        currentUser = DataBaseServices.getInstance().userGenericDAO.findById(AuthService.getInstance().getCurrentUserId());
         requests.addAll(friendShipDAO.getInFriendShip(currentUser.getId()));
         super.onEnter();
     }
@@ -53,7 +53,7 @@ public class InRequestsPage extends BranchPage{
         StringBuilder stringBuilder = new StringBuilder();
 
         for(int i = 0; i < requests.size(); i++){
-            User user = DataBaseServices.getInstance().userDAO.findById(requests.get(i).getId().getUserId());
+            User user = DataBaseServices.getInstance().userGenericDAO.findById(requests.get(i).getId().getUserId());
             stringBuilder.append("#").append(i + 1).append(" Запрос от ")
                     .append(user.getName())
                     .append(" | status : ")

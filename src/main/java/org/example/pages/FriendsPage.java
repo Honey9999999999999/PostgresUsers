@@ -3,7 +3,7 @@ package org.example.pages;
 import lombok.extern.slf4j.Slf4j;
 import org.example.auth.AuthService;
 import org.example.dao.FriendShipDAO;
-import org.example.dao.UserDAO;
+import org.example.dao.GenericDAO;
 import org.example.model.Friendship;
 import org.example.model.User;
 import org.example.util.DataBaseServices;
@@ -14,7 +14,7 @@ import java.util.StringJoiner;
 
 @Slf4j
 public class FriendsPage extends BranchPage{
-    private final UserDAO userDAO;
+    private final GenericDAO<User> userDAO;
     private final FriendShipDAO friendShipDAO;
 
     private User currentUser;
@@ -23,7 +23,7 @@ public class FriendsPage extends BranchPage{
     public FriendsPage(Navigator navigator) {
         super(navigator);
 
-        userDAO = DataBaseServices.getInstance().userDAO;
+        userDAO = DataBaseServices.getInstance().userGenericDAO;
         friendShipDAO = DataBaseServices.getInstance().friendShipDAO;
     }
 
@@ -69,12 +69,17 @@ public class FriendsPage extends BranchPage{
     }
 
     private void sendRequest(){
-        System.out.print("Введите ID пользователя: ");
+        log.info("Введите ID пользователя: ");
         User user = userDAO.findById(scanner.nextLong());
         scanner.nextLine();
 
         if(user == null){
             log.info("Пользователь не найден.");
+            return;
+        }
+
+        if(user.getId().equals(AuthService.getInstance().getCurrentUserId())){
+            log.info("Нельзя отправлять запрос самому себе!");
             return;
         }
 

@@ -1,16 +1,18 @@
 package org.example.auth;
 
-import org.example.dao.UserDAO;
+import org.example.dao.GenericDAO;
+import org.example.model.User;
+import org.example.util.DataBaseServices;
 
 public class AuthService {
 
     private static AuthService instance;
 
-    private final UserDAO userDAO;
+    private final GenericDAO<User> userDAO;
     private Long currentUserId = 0L;
 
     private AuthService(){
-        userDAO = new UserDAO();
+        userDAO = DataBaseServices.getInstance().userGenericDAO;
     }
 
     public static synchronized AuthService getInstance() {
