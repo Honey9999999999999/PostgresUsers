@@ -31,15 +31,8 @@ public class UserPage extends Page {
     }
 
     @Override
-    public void onEnter(){
-        super.onEnter();
-        currentUser = AuthService.getInstance().getCurrentUser();
-    }
-
-    @Override
-    public void onExit(){
-        super.onExit();
-        currentUser = null;
+    protected String getBody(){
+        return String.format("-%s-", AuthService.getInstance().getCurrentUser().getName());
     }
 
     private void singOut(){

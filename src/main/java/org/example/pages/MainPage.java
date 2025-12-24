@@ -2,19 +2,20 @@ package org.example.pages;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.auth.AuthService;
-import org.example.dao.UserDAO;
+import org.example.dao.GenericDAO;
+import org.example.model.Password;
 import org.example.model.User;
 import org.example.util.DataBaseServices;
-
 import java.util.LinkedHashMap;
 
 @Slf4j
 public class MainPage extends Page {
-    private final UserDAO userDAO;
+
+    private final GenericDAO<User> userDAO;
 
     public MainPage(Navigator navigator) {
         super(navigator);
-        userDAO = DataBaseServices.getInstance().userDAO;
+        userDAO = DataBaseServices.getInstance().userGenericDAO;
     }
 
     @Override
@@ -27,11 +28,7 @@ public class MainPage extends Page {
         LinkedHashMap<Integer, MenuItem> menuMap = new LinkedHashMap<>();
 
         menuMap.put(1, new MenuItem("Войти в профиль", this::singIn));
-        menuMap.put(2, new MenuItem("Создать пользователя", this::createUser));
-        menuMap.put(3, new MenuItem("Найти пользователя по ID", this::findUserById));
-        menuMap.put(4, new MenuItem("Показать всех пользователей", this::showAllUsers));
-        menuMap.put(5, new MenuItem("Обновить пользователя", this::updateUser));
-        menuMap.put(6, new MenuItem("Удалить пользователя", this::deleteUser));
+        menuMap.put(2, new MenuItem("Зарегистрироваться", this::singUp));
         menuMap.put(0, new MenuItem("Выход", this::closeApp));
 
         return menuMap;
@@ -39,62 +36,32 @@ public class MainPage extends Page {
 
     private void singIn(){
         System.out.print("Введите ID пользователя: ");
-        Long id = scanner.nextLong();
-        scanner.nextLine();
+        Long id = safeScanner.nextNumber(Long.class, 1L, Long.MAX_VALUE);
         System.out.print("Введите пароль: ");
         String password = scanner.nextLine();
 
         if(AuthService.getInstance().login(id, password)){
             navigator.enterIn(UserPage.class);
-            log.info("Успешно!");
+            System.out.print("Успешно!");
             return;
         }
-        log.info("Неправильные логин или пароль!");
+        System.out.print("Неправильные логин или пароль!");
     }
-    private void createUser(){
+    private void singUp(){
         User user = new User();
         System.out.print("Введите имя: ");
         user.setName(scanner.nextLine());
         System.out.print("Введите email: ");
         user.setEmail(scanner.nextLine());
         System.out.print("Введите возраст: ");
-        user.setAge(scanner.nextInt());
-        scanner.nextLine();
+        user.setAge(safeScanner.nextNumber(Integer.class, 0, 100));
         System.out.print("Введите пароль: ");
         String pass = scanner.nextLine();
-        userDAO.save(user, pass);
-        System.out.println("Пользователь сохранен!");
-    }
-    private User findUserById(){
-        System.out.print("Введите ID пользователя: ");
-        Long id = scanner.nextLong();
-        User user = userDAO.findById(id);
-        System.out.println(user != null ? "Найдено: " + user.getName() : "Не найден");
+        Password password = new Password(user, pass);
+        user.setPassword(password);
 
-        return user;
-    }
-    private void showAllUsers(){
-        userDAO.findAll().forEach(u ->
-                System.out.println("ID#" + u.getId() + ": " + u.getName() + " (" + u.getEmail() + ")"));
-    }
-    private void updateUser(){
-        System.out.print("Введите ID пользователя: ");
-        User user = userDAO.findById(scanner.nextLong());
-        scanner.nextLine();
-
-        System.out.print("Введите новое имя: ");
-        user.setName(scanner.nextLine());
-        System.out.print("Введите новый email: ");
-        user.setEmail(scanner.nextLine());
-        System.out.print("Введите новый возраст: ");
-        user.setAge(scanner.nextInt());
-        userDAO.update(user);
-        System.out.println("Пользователь обновлен!");
-    }
-    private void deleteUser(){
-        System.out.print("Введите ID для удаления: ");
-        userDAO.delete(scanner.nextLong());
-        System.out.println("Готово.");
+        userDAO.save(user);
+        System.out.print("Пользователь сохранен!");
     }
     private void closeApp(){
         navigator.closeAll();

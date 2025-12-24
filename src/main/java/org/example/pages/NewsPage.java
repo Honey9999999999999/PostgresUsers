@@ -2,8 +2,6 @@ package org.example.pages;
 
 import org.example.auth.AuthService;
 import org.example.dao.ContentDAO;
-import org.example.dao.GenericDAO;
-import org.example.dao.UserDAO;
 import org.example.model.Article;
 import org.example.model.Comment;
 import org.example.model.Content;
@@ -16,7 +14,6 @@ import java.util.List;
 
 public class NewsPage extends BranchPage{
     private final ContentDAO contentDAO;
-    private final UserDAO userDAO;
     private User currentUser;
 
     private final List<Article> posts = new ArrayList<>();
@@ -25,7 +22,6 @@ public class NewsPage extends BranchPage{
         super(navigator);
 
         contentDAO = DataBaseServices.getInstance().contentDAO;
-        userDAO = DataBaseServices.getInstance().userDAO;
     }
 
     @Override

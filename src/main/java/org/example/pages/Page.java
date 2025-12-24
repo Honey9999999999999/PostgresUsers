@@ -1,11 +1,14 @@
 package org.example.pages;
 
+import org.example.util.SafeScanner;
+
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public abstract class Page {
     protected Navigator navigator;
     protected Scanner scanner;
+    protected SafeScanner safeScanner;
 
     protected String name;
     protected String body = "";
@@ -16,6 +19,7 @@ public abstract class Page {
     public Page(Navigator navigator){
         this.navigator = navigator;
         scanner = new Scanner(System.in, System.console() != null ? System.console().charset() : StandardCharsets.UTF_8);
+        safeScanner = new SafeScanner(scanner);
         name = getName();
         menuMap = createMenu();
     }

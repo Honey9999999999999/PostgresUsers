@@ -38,6 +38,11 @@ public class ChatPage extends BranchPage{
         currentUser = AuthService.getInstance().getCurrentUser();
         friend = chooseFriend();
 
+        if(friend == null){
+            navigator.enterIn(UserPage.class);
+            return;
+        }
+
         userMap = Map.of(
           currentUser.getId(), currentUser,
           friend.getId(), friend
@@ -59,16 +64,21 @@ public class ChatPage extends BranchPage{
     private User chooseFriend(){
         List<User> friends = DataBaseServices.getInstance().friendShipDAO.getFriends(currentUser.getId());
 
+        if(friends.isEmpty()){
+            System.out.print("У вас нет друзей :с");
+            return null;
+        }
+
         StringJoiner stringJoiner = new StringJoiner("\n").add("");
         int counter = 0;
         for(User friend : friends){
             stringJoiner.add("#" + ++counter + " " + friend.getName());
         }
-        stringJoiner.add("Всего: " + counter + ".")
-                .add("Введите номер друга: ");
+
+        stringJoiner.add("Всего: " + counter + ".").add("Введите номер друга: ");
         System.out.print(stringJoiner);
 
-        User friend =  friends.get(scanner.nextInt() - 1);
+        User friend =  friends.get(safeScanner.nextNumber(Integer.class, 1, friends.size()) - 1);
         scanner.nextLine();
 
         return friend;

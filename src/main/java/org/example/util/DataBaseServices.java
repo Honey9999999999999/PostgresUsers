@@ -7,7 +7,7 @@ import org.example.model.User;
 public class DataBaseServices {
     private static DataBaseServices instance;
 
-    public final UserDAO userDAO;
+    public final GenericDAO<User> userGenericDAO;
     public final ContentDAO contentDAO;
     public final FriendShipDAO friendShipDAO;
     public final GenericDAO<Message> messageGenericDAO;
@@ -15,7 +15,7 @@ public class DataBaseServices {
     public final PasswordDAO passwordDAO;
 
     private DataBaseServices(){
-        userDAO = new UserDAO();
+        userGenericDAO = new GenericDAO<>(User.class);
         contentDAO = new ContentDAO();
         friendShipDAO = new FriendShipDAO();
         messageDAO = new MessageDAO();
