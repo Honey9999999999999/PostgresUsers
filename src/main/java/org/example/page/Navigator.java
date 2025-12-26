@@ -1,4 +1,4 @@
-package org.example.pages;
+package org.example.page;
 
 import java.lang.reflect.Type;
 import java.util.ArrayDeque;

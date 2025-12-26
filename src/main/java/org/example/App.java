@@ -1,8 +1,7 @@
 package org.example;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.model.*;
-import org.example.pages.Navigator;
+import org.example.page.Navigator;
 
 @Slf4j
 public class App 

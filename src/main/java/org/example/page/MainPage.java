@@ -1,21 +1,21 @@
-package org.example.pages;
+package org.example.page;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.auth.AuthService;
-import org.example.dao.GenericDAO;
 import org.example.model.Password;
 import org.example.model.User;
+import org.example.service.UserService;
 import org.example.util.DataBaseServices;
 import java.util.LinkedHashMap;
 
 @Slf4j
 public class MainPage extends Page {
 
-    private final GenericDAO<User> userDAO;
+    private final UserService userService;
 
     public MainPage(Navigator navigator) {
         super(navigator);
-        userDAO = DataBaseServices.getInstance().userGenericDAO;
+        userService = DataBaseServices.getInstance().userService;
     }
 
     @Override
@@ -60,7 +60,7 @@ public class MainPage extends Page {
         Password password = new Password(user, pass);
         user.setPassword(password);
 
-        userDAO.save(user);
+        userService.createNewUser(user);
         System.out.print("Пользователь сохранен!");
     }
     private void closeApp(){

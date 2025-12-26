@@ -3,6 +3,7 @@ package org.example.dao;
 import lombok.extern.slf4j.Slf4j;
 import org.example.model.Friendship;
 import org.example.model.User;
+import org.example.service.UserService;
 import org.example.util.DataBaseServices;
 import org.example.util.HibernateUtil;
 import org.hibernate.Session;
@@ -70,7 +71,7 @@ public class FriendShipDAO {
 
     public List<User> getFriends(Long userId){
         try(Session session = HibernateUtil.getSessionFactory().openSession()){
-            GenericDAO<User> userDAO = DataBaseServices.getInstance().userGenericDAO;
+            UserService userService = DataBaseServices.getInstance().userService;
             String hql = "From Friendship f where f.status = 'CONFIRMED' AND (f.user.id = :userId OR f.friend.id = :userId)";
 
             List<Friendship> friendships = session.createQuery(hql, Friendship.class).setParameter("userId", userId).list();
@@ -78,8 +79,8 @@ public class FriendShipDAO {
 
             for(Friendship friendship : friendships){
                 friends.add(userId.equals(friendship.getId().getUserId())
-                        ? userDAO.findById(friendship.getId().getFriendId())
-                        : userDAO.findById(friendship.getId().getUserId()));
+                        ? userService.findById(friendship.getId().getFriendId())
+                        : userService.findById(friendship.getId().getUserId()));
             }
             
             return friends;

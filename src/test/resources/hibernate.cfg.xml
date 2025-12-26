@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "www.hibernate.org">
+<hibernate-configuration>
+    <session-factory>
+        <!-- Драйвер Testcontainers, который сам поднимет Docker -->
+        <property name="hibernate.connection.driver_class">org.testcontainers.jdbc.ContainerDatabaseDriver</property>
+
+        <!-- Специальный URL: tc указывает на Testcontainers, postgres:15 - версия образа -->
+        <property name="hibernate.connection.url">jdbc:tc:postgresql:15:///test_db</property>
+
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+        <property name="hibernate.hbm2ddl.auto">create-drop</property>
+        <property name="hibernate.show_sql">true</property>
+
+        <!-- Регистрация класса -->
+        <mapping class="org.example.model.User"/>
+        <mapping class="org.example.model.Role"/>
+        <mapping class="org.example.model.Content"/>
+        <mapping class="org.example.model.Article"/>
+        <mapping class="org.example.model.Comment"/>
+        <mapping class="org.example.model.Friendship"/>
+        <mapping class="org.example.model.Message"/>
+        <mapping class="org.example.model.Password"/>
+    </session-factory>
+</hibernate-configuration>

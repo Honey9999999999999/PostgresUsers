@@ -1,11 +1,11 @@
-package org.example.pages;
+package org.example.page;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.auth.AuthService;
 import org.example.dao.FriendShipDAO;
-import org.example.dao.GenericDAO;
 import org.example.model.Friendship;
 import org.example.model.User;
+import org.example.service.UserService;
 import org.example.util.DataBaseServices;
 
 import java.util.LinkedHashMap;
@@ -14,7 +14,7 @@ import java.util.StringJoiner;
 
 @Slf4j
 public class FriendsPage extends BranchPage{
-    private final GenericDAO<User> userDAO;
+    private final UserService userService;
     private final FriendShipDAO friendShipDAO;
 
     private User currentUser;
@@ -23,7 +23,7 @@ public class FriendsPage extends BranchPage{
     public FriendsPage(Navigator navigator) {
         super(navigator);
 
-        userDAO = DataBaseServices.getInstance().userGenericDAO;
+        userService = DataBaseServices.getInstance().userService;
         friendShipDAO = DataBaseServices.getInstance().friendShipDAO;
     }
 
@@ -70,7 +70,7 @@ public class FriendsPage extends BranchPage{
 
     private void sendRequest(){
         log.info("Введите ID пользователя: ");
-        User user = userDAO.findById(scanner.nextLong());
+        User user = userService.findById(scanner.nextLong());
         scanner.nextLine();
 
         if(user == null){
@@ -90,7 +90,7 @@ public class FriendsPage extends BranchPage{
         StringBuilder stringBuilder = new StringBuilder("-Исходящие запросы-\n");
 
         for(Friendship friendship : requests){
-            User friend = userDAO.findById(friendship.getId().getFriendId());
+            User friend = userService.findById(friendship.getId().getFriendId());
             stringBuilder.append("\t* Запрос к ")
                     .append(friend.getName())
                     .append(" | status : ")

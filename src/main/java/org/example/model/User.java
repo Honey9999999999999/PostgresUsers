@@ -25,6 +25,7 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private Integer age;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -43,14 +44,10 @@ public class User {
     private Password password;
 
     // Обязательно: пустой конструктор
-    public User() {
-        Role defaultRole = new Role();
-        defaultRole.setId(3L);
-        role = defaultRole;
-    }
-
-    public void addPost(Content post){
-        posts.add(post);
-        post.setUser(this);
+    public User() {}
+    public User(String name, String email, int age){
+        this.name = name;
+        this.email = email;
+        this.age = age;
     }
 }

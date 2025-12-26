@@ -1,8 +1,7 @@
-package org.example.pages;
+package org.example.page;
 
 import org.example.auth.AuthService;
 import org.example.model.*;
-import org.example.util.DataBaseServices;
 
 import java.util.LinkedHashMap;
 

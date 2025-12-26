@@ -20,7 +20,7 @@ public class AuthService {
     }
 
     public boolean login(Long userId, String password) {
-        User tempUser = DataBaseServices.getInstance().userGenericDAO.findById(userId);
+        User tempUser = DataBaseServices.getInstance().userService.findById(userId);
 
         if(tempUser != null
                 && DataBaseServices.getInstance().passwordDAO.isCorrectPassword(userId, password)){

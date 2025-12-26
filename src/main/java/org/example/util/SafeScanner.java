@@ -20,7 +20,8 @@ public class SafeScanner {
 
         dataMap = Map.of(
                 Integer.class, new Data<>(Integer.MIN_VALUE, Integer.MAX_VALUE, scanner::hasNextInt, scanner::nextInt),
-                Long.class, new Data<>(Long.MIN_VALUE, Long.MAX_VALUE, scanner::hasNextLong, scanner::nextLong)
+                Long.class, new Data<>(Long.MIN_VALUE, Long.MAX_VALUE, scanner::hasNextLong, scanner::nextLong),
+                Float.class, new Data<>(Float.MIN_VALUE, Float.MAX_VALUE, scanner::hasNextFloat, scanner::nextFloat)
         );
     }
 
@@ -42,7 +43,7 @@ public class SafeScanner {
                 scanner.nextLine();
             }
 
-            System.out.printf("Ошибка! Введите целое число в пределах (%s <= X <= %s): ", lowerBarrier.toString(), upperBarrier.toString());
+            System.out.printf("Ошибка! Введите число в пределах (%s <= X <= %s): ", lowerBarrier.toString(), upperBarrier.toString());
         }
     }
 }

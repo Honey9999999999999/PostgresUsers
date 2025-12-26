@@ -19,7 +19,7 @@ public class Content {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Column(name = "title")
@@ -31,9 +31,6 @@ public class Content {
     @OneToMany(mappedBy = "content", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
-    public void addUser(User user){
-        this.user = user;
-    }
     public void addComment(Comment comment){
         this.comments.add(comment);
         comment.addContent(this);

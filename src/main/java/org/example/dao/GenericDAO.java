@@ -10,34 +10,41 @@ import java.util.List;
 @Slf4j
 public record GenericDAO<T>(Class<T> entityClass) {
     // CREATE
-    public void save(T obj) {
+    public <C extends T> void save(C obj) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
             session.persist(obj);
             transaction.commit();
         } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
+            if (transaction != null && transaction.getStatus().canRollback()) transaction.rollback();
             log.error("Ошибка при выполнении транзакции в GenericDAO.save", e);
+            throw e;
         }
     }
 
     // READ (один)
     public T findById(Long id) {
+        return findById(entityClass, id);
+    }
+    public <C extends T> C findById(Class<C> type, Long id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.get(entityClass, id);
+            return session.get(type, id);
         }
     }
 
     // READ (все)
     public List<T> findAll() {
+        return findAll(entityClass);
+    }
+    public <C extends T> List<C> findAll(Class<C> type) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.createQuery("FROM " + entityClass.getName(), entityClass).list();
+            return session.createQuery("FROM " + type.getName(), type).list();
         }
     }
 
     // UPDATE
-    public void update(T obj) {
+    public <C extends T> void update(C obj) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();

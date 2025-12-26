@@ -1,4 +1,4 @@
-package org.example.pages;
+package org.example.page;
 
 import org.example.auth.AuthService;
 import org.example.model.Message;
@@ -78,10 +78,7 @@ public class ChatPage extends BranchPage{
         stringJoiner.add("Всего: " + counter + ".").add("Введите номер друга: ");
         System.out.print(stringJoiner);
 
-        User friend =  friends.get(safeScanner.nextNumber(Integer.class, 1, friends.size()) - 1);
-        scanner.nextLine();
-
-        return friend;
+        return friends.get(safeScanner.nextNumber(Integer.class, 1, friends.size()) - 1);
     }
 
     private void sendMessage(){

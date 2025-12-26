@@ -1,4 +1,4 @@
-package org.example.pages;
+package org.example.page;
 
 public abstract class BranchPage extends Page{
     public BranchPage(Navigator navigator) {

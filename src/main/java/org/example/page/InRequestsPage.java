@@ -1,4 +1,4 @@
-package org.example.pages;
+package org.example.page;
 
 import org.example.auth.AuthService;
 import org.example.dao.FriendShipDAO;
@@ -53,7 +53,7 @@ public class InRequestsPage extends BranchPage{
         StringBuilder stringBuilder = new StringBuilder();
 
         for(int i = 0; i < requests.size(); i++){
-            User user = DataBaseServices.getInstance().userGenericDAO.findById(requests.get(i).getId().getUserId());
+            User user = DataBaseServices.getInstance().userService.findById(requests.get(i).getId().getUserId());
             stringBuilder.append("#").append(i + 1).append(" Запрос от ")
                     .append(user.getName())
                     .append(" | status : ")

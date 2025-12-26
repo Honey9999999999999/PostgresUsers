@@ -1,11 +1,11 @@
-package org.example.pages;
+package org.example.page;
 
 import org.example.auth.AuthService;
-import org.example.dao.ContentDAO;
 import org.example.model.Article;
 import org.example.model.Comment;
 import org.example.model.Content;
 import org.example.model.User;
+import org.example.service.ContentService;
 import org.example.util.DataBaseServices;
 
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 public class NewsPage extends BranchPage{
-    private final ContentDAO contentDAO;
+    private final ContentService contentService;
     private User currentUser;
 
     private final List<Article> posts = new ArrayList<>();
@@ -21,7 +21,7 @@ public class NewsPage extends BranchPage{
     public NewsPage(Navigator navigator) {
         super(navigator);
 
-        contentDAO = DataBaseServices.getInstance().contentDAO;
+        contentService = DataBaseServices.getInstance().contentService;
     }
 
     @Override
@@ -45,7 +45,8 @@ public class NewsPage extends BranchPage{
     public void onEnter(){
         super.onEnter();
         currentUser = AuthService.getInstance().getCurrentUser();
-        posts.addAll(contentDAO.findArticleByUserId(currentUser.getId()));
+        List<Article> result = contentService.findContentByUserId(Article.class, currentUser.getId()).reversed();
+        posts.addAll(result);
     }
     @Override
     public void onExit(){
@@ -75,15 +76,17 @@ public class NewsPage extends BranchPage{
 
     private void createPost(){
         Article post = new Article();
+        post.setUser(AuthService.getInstance().getCurrentUser());
+
         System.out.print("Введите название поста: ");
         post.setTitle(scanner.nextLine());
         System.out.print("Введите содержание: ");
         post.setBody(scanner.nextLine());
 
-        contentDAO.createArticle(currentUser.getId(), post);
+        contentService.save(post);
     }
     private void getPosts(long id){
-        contentDAO.findContentByUserId(id).forEach(p ->
+        contentService.findContentByUserId(Content.class, id).forEach(p ->
                 System.out.println("ID#" + p.getId() + " : " + p.getTitle() + " : " + p.getCreatedAt()));
     }
     private void getMyPosts(){
@@ -97,16 +100,19 @@ public class NewsPage extends BranchPage{
         System.out.print("Введите ID поста: ");
         Long id = scanner.nextLong();
         scanner.nextLine();
-        Content content = contentDAO.findById(id);
+        Content content = contentService.findById(id);
         System.out.println(content != null ? "Найдено: " + content.getTitle() : "Не найден");
 
         if(content == null) return;
 
         Comment comment = new Comment();
+        comment.setUser(AuthService.getInstance().getCurrentUser());
+
         comment.setTitle(currentUser.getName() + " комментирует " + content.getTitle());
         System.out.print("Введите содержание: ");
         comment.setText(scanner.nextLine());
 
-        contentDAO.createComment(currentUser.getId(), content.getId(), comment);
+        content.addComment(comment);
+        contentService.update(content);
     }
 }
