@@ -11,19 +11,17 @@ import java.util.List;
 public record GenericDAO<T>(Class<T> entityClass) {
     // CREATE
     public <C extends T> void save(C obj) {
-        Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
+            Transaction transaction = session.beginTransaction();
             session.persist(obj);
             transaction.commit();
         } catch (Exception e) {
-            if (transaction != null && transaction.getStatus().canRollback()) transaction.rollback();
             log.error("Ошибка при выполнении транзакции в GenericDAO.save", e);
             throw e;
         }
     }
 
-    // READ (один)
+    // READ (one)
     public T findById(Long id) {
         return findById(entityClass, id);
     }
@@ -33,7 +31,7 @@ public record GenericDAO<T>(Class<T> entityClass) {
         }
     }
 
-    // READ (все)
+    // READ (all)
     public List<T> findAll() {
         return findAll(entityClass);
     }
@@ -45,24 +43,22 @@ public record GenericDAO<T>(Class<T> entityClass) {
 
     // UPDATE
     public <C extends T> void update(C obj) {
-        Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
+            Transaction transaction = session.beginTransaction();
             session.merge(obj);
             transaction.commit();
         } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
             log.error("Ошибка при выполнении транзакции в GenericDAO.update", e);
+            throw e;
         }
     }
 
     // DELETE
     public void delete(Long id) {
-        Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
+            Transaction transaction = session.beginTransaction();
 
-            int updatedEntities = session.createMutationQuery("DELETE FROM \" + entityClass.getName() + \" WHERE id = :id")
+            int updatedEntities = session.createMutationQuery("DELETE FROM " + entityClass.getName() + " WHERE id = :id")
                     .setParameter("id", id)
                     .executeUpdate();
 
@@ -72,8 +68,18 @@ public record GenericDAO<T>(Class<T> entityClass) {
                 log.info("Объект с таким ID не найден, ничего не удалено.");
             }
         } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
             log.error("Ошибка при выполнении транзакции в GenericDAO.delete", e);
+            throw e;
+        }
+    }
+    public void delete(T obj) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            session.remove(obj);
+            transaction.commit();
+        } catch (Exception e) {
+            log.error("Ошибка при выполнении транзакции в GenericDAO.delete", e);
+            throw e;
         }
     }
 }

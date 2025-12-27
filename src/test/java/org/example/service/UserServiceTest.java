@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -20,6 +21,7 @@ class UserServiceTest {
     @Mock
     private GenericDAO<User> userDAO;
 
+    @InjectMocks
     private UserService userService;
 
     @BeforeEach
@@ -31,9 +33,7 @@ class UserServiceTest {
     @Test
     @DisplayName("Должен успешно сохранять пользователя с ролью по умолчанию")
     void createNewUser_Success() {
-        User user = new User(); // Конструктор установит роль ID 3
-        user.setName("Ivan");
-        user.setEmail("ivan@example.com");
+        User user = new User("Ivan", "ivan@example.com", 54);
 
         userService.createNewUser(user);
 
@@ -77,6 +77,20 @@ class UserServiceTest {
         assertTrue(exception.getMessage().contains(String.valueOf(userId)));
         // Проверяем, что метод update НЕ вызывался
         verify(userDAO, never()).update(any());
+    }
+
+    @Test
+    @DisplayName("Должен выбрасывать исключение, если пользователь без почты")
+    public void saveUserWithoutEmail(){
+        User user = new User();
+        user.setName("Danya");
+        user.setAge(67);
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            userService.createNewUser(user);
+        });
+
+        verify(userDAO, never()).save(any(User.class));
     }
 
     @Test

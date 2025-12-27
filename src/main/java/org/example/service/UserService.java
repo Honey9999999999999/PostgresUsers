@@ -13,6 +13,10 @@ public record UserService(GenericDAO<User> userGenericDAO) {
             user.setRole(Role.DEFAULT_ROLE);
         }
 
+        if(user.getName() == null || user.getEmail() == null || user.getAge() == null){
+            throw new IllegalArgumentException("Обязательные поля пользователя не должны быть null");
+        }
+
         userGenericDAO.save(user);
     }
 
