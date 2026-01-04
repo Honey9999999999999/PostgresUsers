@@ -2,26 +2,19 @@ package org.example.page;
 
 import org.example.auth.AuthService;
 import org.example.model.Article;
-import org.example.model.Comment;
-import org.example.model.Content;
 import org.example.model.User;
-import org.example.service.ContentService;
-import org.example.util.DataBaseServices;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 public class NewsPage extends BranchPage{
-    private final ContentService contentService;
     private User currentUser;
 
     private final List<Article> posts = new ArrayList<>();
 
     public NewsPage(Navigator navigator) {
         super(navigator);
-
-        contentService = DataBaseServices.getInstance().contentService;
     }
 
     @Override
@@ -33,10 +26,10 @@ public class NewsPage extends BranchPage{
     protected LinkedHashMap<Integer, MenuItem> createMenu() {
         LinkedHashMap<Integer, MenuItem> menuMap = new LinkedHashMap<>();
 
-        menuMap.put(1, new MenuItem("Написать пост", this::createPost));
-        menuMap.put(2, new MenuItem("Показать все посты", this::getMyPosts));
-        menuMap.put(3, new MenuItem("Показать посты другого пользователя", this::getAnotherPosts));
-        menuMap.put(4, new MenuItem("Прокомментировать пост", this::createComment));
+//        menuMap.put(1, new MenuItem("Написать пост", this::createPost));
+//        menuMap.put(2, new MenuItem("Показать все посты", this::getMyPosts));
+//        menuMap.put(3, new MenuItem("Показать посты другого пользователя", this::getAnotherPosts));
+//        menuMap.put(4, new MenuItem("Прокомментировать пост", this::createComment));
 
         return menuMap;
     }
@@ -45,8 +38,8 @@ public class NewsPage extends BranchPage{
     public void onEnter(){
         super.onEnter();
         currentUser = AuthService.getInstance().getCurrentUser();
-        List<Article> result = contentService.findContentByUserId(Article.class, currentUser.getId()).reversed();
-        posts.addAll(result);
+        //List<Article> result = contentService.findContentByUserId(Article.class, currentUser.getId()).reversed();
+        //posts.addAll(result);
     }
     @Override
     public void onExit(){
@@ -74,45 +67,45 @@ public class NewsPage extends BranchPage{
         return new String(stringBuilder);
     }
 
-    private void createPost(){
-        Article post = new Article();
-        post.setUser(AuthService.getInstance().getCurrentUser());
-
-        System.out.print("Введите название поста: ");
-        post.setTitle(scanner.nextLine());
-        System.out.print("Введите содержание: ");
-        post.setBody(scanner.nextLine());
-
-        contentService.save(post);
-    }
-    private void getPosts(long id){
-        contentService.findContentByUserId(Content.class, id).forEach(p ->
-                System.out.println("ID#" + p.getId() + " : " + p.getTitle() + " : " + p.getCreatedAt()));
-    }
-    private void getMyPosts(){
-        getPosts(currentUser.getId());
-    }
-    private void getAnotherPosts(){
-        System.out.print("Введите id пользователя: ");
-        getPosts(scanner.nextLong());
-    }
-    private void createComment(){
-        System.out.print("Введите ID поста: ");
-        Long id = scanner.nextLong();
-        scanner.nextLine();
-        Content content = contentService.findById(id);
-        System.out.println(content != null ? "Найдено: " + content.getTitle() : "Не найден");
-
-        if(content == null) return;
-
-        Comment comment = new Comment();
-        comment.setUser(AuthService.getInstance().getCurrentUser());
-
-        comment.setTitle(currentUser.getName() + " комментирует " + content.getTitle());
-        System.out.print("Введите содержание: ");
-        comment.setText(scanner.nextLine());
-
-        content.addComment(comment);
-        contentService.update(content);
-    }
+//    private void createPost(){
+//        Article post = new Article();
+//        post.setUser(AuthService.getInstance().getCurrentUser());
+//
+//        System.out.print("Введите название поста: ");
+//        post.setTitle(scanner.nextLine());
+//        System.out.print("Введите содержание: ");
+//        post.setBody(scanner.nextLine());
+//
+//        //contentService.save(post);
+//    }
+//    private void getPosts(long id){
+//        contentService.findContentByUserId(Content.class, id).forEach(p ->
+//                System.out.println("ID#" + p.getId() + " : " + p.getTitle() + " : " + p.getCreatedAt()));
+//    }
+//    private void getMyPosts(){
+//        getPosts(currentUser.getId());
+//    }
+//    private void getAnotherPosts(){
+//        System.out.print("Введите id пользователя: ");
+//        getPosts(scanner.nextLong());
+//    }
+//    private void createComment(){
+//        System.out.print("Введите ID поста: ");
+//        Long id = scanner.nextLong();
+//        scanner.nextLine();
+//        Content content = contentService.findById(id);
+//        System.out.println(content != null ? "Найдено: " + content.getTitle() : "Не найден");
+//
+//        if(content == null) return;
+//
+//        Comment comment = new Comment();
+//        comment.setUser(AuthService.getInstance().getCurrentUser());
+//
+//        comment.setTitle(currentUser.getName() + " комментирует " + content.getTitle());
+//        System.out.print("Введите содержание: ");
+//        comment.setText(scanner.nextLine());
+//
+//        content.addComment(comment);
+//        contentService.update(content);
+//    }
 }

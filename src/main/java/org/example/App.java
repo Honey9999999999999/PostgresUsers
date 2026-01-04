@@ -2,13 +2,19 @@ package org.example;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.page.Navigator;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @Slf4j
+@SpringBootApplication
 public class App 
 {
     private static final Navigator navigator = Navigator.getInstance();
 
     public static void main(String[] args){
+        SpringApplication.run(App.class, args);
+
+
         while (navigator.isRunning()) {
             navigator.update();
         }

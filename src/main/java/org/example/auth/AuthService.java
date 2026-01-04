@@ -2,7 +2,6 @@ package org.example.auth;
 
 import lombok.Getter;
 import org.example.model.User;
-import org.example.util.DataBaseServices;
 
 @Getter
 public class AuthService {
@@ -20,13 +19,13 @@ public class AuthService {
     }
 
     public boolean login(Long userId, String password) {
-        User tempUser = DataBaseServices.getInstance().userService.findById(userId);
-
-        if(tempUser != null
-                && DataBaseServices.getInstance().passwordDAO.isCorrectPassword(userId, password)){
-            currentUser = tempUser;
-            return true;
-        }
+//        User tempUser = DataBaseServices.getInstance().userService.findById(userId);
+//
+//        if(tempUser != null
+//                && DataBaseServices.getInstance().passwordDAO.isCorrectPassword(userId, password)){
+//            currentUser = tempUser;
+//            return true;
+//        }
 
         return false;
     }

@@ -1,0 +1,23 @@
+### Получить всех пользователей
+GET http://localhost:8080/api/users
+
+### Создать пользователя
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "name": "Artem",
+  "email": "artem@example.com"
+}
+
+### Обновить пользователя
+PUT http://localhost:8080/api/users/1
+Content-Type: application/json
+
+{
+  "name": "Artem Updated",
+  "email": "artem_new@example.com"
+}
+
+### Удалить пользователя
+DELETE http://localhost:8080/api/users/1

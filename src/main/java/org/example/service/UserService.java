@@ -1,39 +1,66 @@
 package org.example.service;
 
-import org.example.dao.GenericDAO;
-import org.example.model.Role;
+import jakarta.transaction.Transactional;
+import org.example.dto.UserDTO;
 import org.example.model.User;
+import org.example.repository.UserRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-public record UserService(GenericDAO<User> userGenericDAO) {
+@Service
+@Transactional
+public class UserService {
 
-    public void createNewUser(User user) {
-        if(user.getRole() == null){
-            user.setRole(Role.DEFAULT_ROLE);
-        }
+    private final UserRepository userRepository;
 
-        if(user.getName() == null || user.getEmail() == null || user.getAge() == null){
-            throw new IllegalArgumentException("Обязательные поля пользователя не должны быть null");
-        }
-
-        userGenericDAO.save(user);
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    public User findById(Long id) {
-        return userGenericDAO.findById(id);
+    public List<UserDTO> findAll() {
+        return userRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
-    public void updateUserName(Long id, String newName) {
-        User existingUser = userGenericDAO.findById(id);
-        if (existingUser == null) {
-            throw new IllegalArgumentException("Пользователь с ID " + id + " не найден.");
-        }
-        existingUser.setName(newName);
-        userGenericDAO.update(existingUser);
+    public UserDTO findById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return convertToDTO(user);
     }
 
-    public List<User> findAllUsers() {
-        return userGenericDAO.findAll();
+    public UserDTO save(UserDTO userDTO) {
+        User user = convertToEntity(userDTO);
+        User savedUser = userRepository.save(user);
+        return convertToDTO(savedUser);
+    }
+
+    public UserDTO update(Long id, UserDTO userDTO) {
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        existingUser.setName(userDTO.getName());
+        existingUser.setEmail(userDTO.getEmail());
+
+        return convertToDTO(userRepository.save(existingUser));
+    }
+
+    public void delete(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    // Вспомогательные методы конвертации
+    private UserDTO convertToDTO(User user) {
+        return new UserDTO(user.getId(), user.getName(), user.getEmail());
+    }
+
+    private User convertToEntity(UserDTO dto) {
+        User user = new User();
+        user.setId(dto.getId());
+        user.setName(dto.getName());
+        user.setEmail(dto.getEmail());
+        return user;
     }
 }

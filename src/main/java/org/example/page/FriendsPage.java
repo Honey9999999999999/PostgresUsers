@@ -2,11 +2,9 @@ package org.example.page;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.auth.AuthService;
-import org.example.dao.FriendShipDAO;
 import org.example.model.Friendship;
 import org.example.model.User;
 import org.example.service.UserService;
-import org.example.util.DataBaseServices;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -14,17 +12,11 @@ import java.util.StringJoiner;
 
 @Slf4j
 public class FriendsPage extends BranchPage{
-    private final UserService userService;
-    private final FriendShipDAO friendShipDAO;
-
     private User currentUser;
     private List<User> friends;
 
     public FriendsPage(Navigator navigator) {
         super(navigator);
-
-        userService = DataBaseServices.getInstance().userService;
-        friendShipDAO = DataBaseServices.getInstance().friendShipDAO;
     }
 
     @Override
@@ -36,17 +28,17 @@ public class FriendsPage extends BranchPage{
     protected LinkedHashMap<Integer, MenuItem> createMenu() {
         LinkedHashMap<Integer, MenuItem> menuMap = new LinkedHashMap<>();
 
-        menuMap.put(1, new MenuItem("Отправить запрос в друзья", this::sendRequest));
-        menuMap.put(2, new MenuItem("Просмотреть исходящие запросы", this::getOutRequests));
-        menuMap.put(3, new MenuItem("Просмотреть входящие запросы", this::getInRequests));
+//        menuMap.put(1, new MenuItem("Отправить запрос в друзья", this::sendRequest));
+//        menuMap.put(2, new MenuItem("Просмотреть исходящие запросы", this::getOutRequests));
+//        menuMap.put(3, new MenuItem("Просмотреть входящие запросы", this::getInRequests));
 
         return menuMap;
     }
 
     @Override
     public void onEnter(){
-        currentUser = AuthService.getInstance().getCurrentUser();
-        friends = friendShipDAO.getFriends(currentUser.getId());
+//        currentUser = AuthService.getInstance().getCurrentUser();
+//        friends = friendShipDAO.getFriends(currentUser.getId());
         super.onEnter();
     }
 
@@ -68,42 +60,42 @@ public class FriendsPage extends BranchPage{
         return stringJoiner.toString();
     }
 
-    private void sendRequest(){
-        log.info("Введите ID пользователя: ");
-        User user = userService.findById(scanner.nextLong());
-        scanner.nextLine();
-
-        if(user == null){
-            log.info("Пользователь не найден.");
-            return;
-        }
-
-        if(user.getId().equals(currentUser.getId())){
-            log.info("Нельзя отправлять запрос самому себе!");
-            return;
-        }
-
-        friendShipDAO.createFriendShip(currentUser, user);
-    }
-    private void getOutRequests(){
-        List<Friendship> requests = friendShipDAO.getOutFriendShip(currentUser.getId());
-        StringBuilder stringBuilder = new StringBuilder("-Исходящие запросы-\n");
-
-        for(Friendship friendship : requests){
-            User friend = userService.findById(friendship.getId().getFriendId());
-            stringBuilder.append("\t* Запрос к ")
-                    .append(friend.getName())
-                    .append(" | status : ")
-                    .append(friendship.getStatus())
-                    .append(" | от ")
-                    .append(friendship.getCreatedAt())
-                    .append("\n");
-        }
-
-        if(!stringBuilder.isEmpty())
-            messages.add(stringBuilder.toString());
-    }
-    private void getInRequests(){
-        navigator.enterIn(InRequestsPage.class);
-    }
+//    private void sendRequest(){
+//        log.info("Введите ID пользователя: ");
+//        User user = userService.findById(scanner.nextLong());
+//        scanner.nextLine();
+//
+//        if(user == null){
+//            log.info("Пользователь не найден.");
+//            return;
+//        }
+//
+//        if(user.getId().equals(currentUser.getId())){
+//            log.info("Нельзя отправлять запрос самому себе!");
+//            return;
+//        }
+//
+//        friendShipDAO.createFriendShip(currentUser, user);
+//    }
+//    private void getOutRequests(){
+//        List<Friendship> requests = friendShipDAO.getOutFriendShip(currentUser.getId());
+//        StringBuilder stringBuilder = new StringBuilder("-Исходящие запросы-\n");
+//
+//        for(Friendship friendship : requests){
+//            User friend = userService.findById(friendship.getId().getFriendId());
+//            stringBuilder.append("\t* Запрос к ")
+//                    .append(friend.getName())
+//                    .append(" | status : ")
+//                    .append(friendship.getStatus())
+//                    .append(" | от ")
+//                    .append(friendship.getCreatedAt())
+//                    .append("\n");
+//        }
+//
+//        if(!stringBuilder.isEmpty())
+//            messages.add(stringBuilder.toString());
+//    }
+//    private void getInRequests(){
+//        navigator.enterIn(InRequestsPage.class);
+//    }
 }

@@ -3,7 +3,6 @@ package org.example.page;
 import org.example.auth.AuthService;
 import org.example.model.Message;
 import org.example.model.User;
-import org.example.util.DataBaseServices;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -28,7 +27,7 @@ public class ChatPage extends BranchPage{
     @Override
     protected LinkedHashMap<Integer, MenuItem> createMenu() {
         LinkedHashMap<Integer, MenuItem> menuMap = new LinkedHashMap<>();
-        menuMap.put(1, new MenuItem("Отправить сообщение", this::sendMessage));
+//        menuMap.put(1, new MenuItem("Отправить сообщение", this::sendMessage));
 
         return menuMap;
     }
@@ -36,7 +35,7 @@ public class ChatPage extends BranchPage{
     @Override
     public void onEnter(){
         currentUser = AuthService.getInstance().getCurrentUser();
-        friend = chooseFriend();
+//        friend = chooseFriend();
 
         if(friend == null){
             navigator.enterIn(UserPage.class);
@@ -51,42 +50,42 @@ public class ChatPage extends BranchPage{
 
     @Override
     protected String getBody(){
-        List<Message> messages = DataBaseServices.getInstance().messageDAO.getMessages(currentUser.getId(), friend.getId());
+//        List<Message> messages = DataBaseServices.getInstance().messageDAO.getMessages(currentUser.getId(), friend.getId());
         StringJoiner stringJoiner = new StringJoiner("\n");
 
-        for(Message message : messages){
-            stringJoiner.add(userMap.get(message.getId().getSenderId()).getName() + " : " + message.getText());
-        }
+//        for(Message message : messages){
+//            stringJoiner.add(userMap.get(message.getId().getSenderId()).getName() + " : " + message.getText());
+//        }
 
         return stringJoiner.toString();
     }
 
-    private User chooseFriend(){
-        List<User> friends = DataBaseServices.getInstance().friendShipDAO.getFriends(currentUser.getId());
-
-        if(friends.isEmpty()){
-            System.out.print("У вас нет друзей :с");
-            return null;
-        }
-
-        StringJoiner stringJoiner = new StringJoiner("\n").add("");
-        int counter = 0;
-        for(User friend : friends){
-            stringJoiner.add("#" + ++counter + " " + friend.getName());
-        }
-
-        stringJoiner.add("Всего: " + counter + ".").add("Введите номер друга: ");
-        System.out.print(stringJoiner);
-
-        return friends.get(safeScanner.nextNumber(Integer.class, 1, friends.size()) - 1);
-    }
-
-    private void sendMessage(){
-        Message message = new Message(currentUser, friend);
-
-        System.out.print("Введите сообщение: ");
-        message.setText(scanner.nextLine());
-
-        DataBaseServices.getInstance().messageGenericDAO.update(message);
-    }
+//    private User chooseFriend(){
+//        List<User> friends = DataBaseServices.getInstance().friendShipDAO.getFriends(currentUser.getId());
+//
+//        if(friends.isEmpty()){
+//            System.out.print("У вас нет друзей :с");
+//            return null;
+//        }
+//
+//        StringJoiner stringJoiner = new StringJoiner("\n").add("");
+//        int counter = 0;
+//        for(User friend : friends){
+//            stringJoiner.add("#" + ++counter + " " + friend.getName());
+//        }
+//
+//        stringJoiner.add("Всего: " + counter + ".").add("Введите номер друга: ");
+//        System.out.print(stringJoiner);
+//
+//        return friends.get(safeScanner.nextNumber(Integer.class, 1, friends.size()) - 1);
+//    }
+//
+//    private void sendMessage(){
+//        Message message = new Message(currentUser, friend);
+//
+//        System.out.print("Введите сообщение: ");
+//        message.setText(scanner.nextLine());
+//
+//        DataBaseServices.getInstance().messageGenericDAO.update(message);
+//    }
 }

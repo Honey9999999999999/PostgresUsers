@@ -5,17 +5,13 @@ import org.example.auth.AuthService;
 import org.example.model.Password;
 import org.example.model.User;
 import org.example.service.UserService;
-import org.example.util.DataBaseServices;
 import java.util.LinkedHashMap;
 
 @Slf4j
 public class MainPage extends Page {
 
-    private final UserService userService;
-
     public MainPage(Navigator navigator) {
         super(navigator);
-        userService = DataBaseServices.getInstance().userService;
     }
 
     @Override
@@ -60,7 +56,7 @@ public class MainPage extends Page {
         Password password = new Password(user, pass);
         user.setPassword(password);
 
-        userService.createNewUser(user);
+        //userService.createNewUser(user);
         System.out.print("Пользователь сохранен!");
     }
     private void closeApp(){
