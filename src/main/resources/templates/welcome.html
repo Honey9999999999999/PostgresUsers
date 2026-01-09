@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<!-- Подключаем пространство имен Thymeleaf для работы атрибутов th: -->
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Приветственная страница</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f7f6;
+        }
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        h1 { color: #2c3e50; }
+        p { color: #7f8c8d; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <!-- th:text заменит содержимое тега значением из Model -->
+    <h1 th:text="${message}">Текст по умолчанию (если сервер не прислал данные)</h1>
+
+    <p>Эта страница отрендерена на стороне сервера в 2026 году.</p>
+
+    <!-- Пример вывода текущей даты, если вы добавите её в модель -->
+    <p th:if="${serverTime}">
+        Время на сервере: <span th:text="${#temporals.format(serverTime, 'dd.MM.yyyy HH:mm')}"></span>
+    </p>
+</div>
+
+</body>
+</html>

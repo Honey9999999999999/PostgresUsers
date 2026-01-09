@@ -41,6 +41,10 @@ public class Message {
     @JoinColumn(name = "recipient_id")
     private User recipient;
 
+//    @MapsId("createdAt")
+//    @Column(name = "created_at", updatable = false)
+//    private LocalDateTime createdAt;
+
     @Column(name = "text")
     private String text;
 

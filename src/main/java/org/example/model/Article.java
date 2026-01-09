@@ -13,5 +13,5 @@ public class Article extends Content {
     private String body;
 
     @Column(name = "viewsCount")
-    private int viewsCount;
+    private Integer viewsCount;
 }
